@@ -15,7 +15,7 @@ class FacebookPixelServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('laravel-facebook-pixel')
+            ->name('facebook-pixel')
             ->hasConfigFile();
     }
 
