@@ -1,0 +1,62 @@
+{
+    "name": "combindma/laravel-facebook-pixel",
+    "description": "Facebook Pixel integration for Laravel",
+    "keywords": [
+        "combindma",
+        "facebook-pixel",
+        "laravel"
+    ],
+    "homepage": "https://github.com/combindma/laravel-facebook-pixel",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Combind",
+            "email": "hello@combind.ma",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "spatie/laravel-package-tools": "^1.4.3",
+        "illuminate/contracts": "^8.0"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest",
+        "orchestra/testbench": "^6.13",
+        "phpunit/phpunit": "^9.3",
+        "vimeo/psalm": "^4.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Combindma\\FacebookPixel\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Combindma\\FacebookPixel\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "psalm": "vendor/bin/psalm",
+        "test": "vendor/bin/phpunit --colors=always",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Combindma\\FacebookPixel\\FacebookPixelServiceProvider"
+            ],
+            "aliases": {
+                "FacebookPixel": "Combindma\\FacebookPixel\\FacebookPixelFacade"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
