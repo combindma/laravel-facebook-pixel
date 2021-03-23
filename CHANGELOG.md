@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-facebook-pixel` will be documented in this file.
 
+## 1.0.3 - 2020-03-23
+
+- update
+
 ## 1.0.2 - 2020-03-23
 
 - update
