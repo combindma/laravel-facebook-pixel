@@ -11,6 +11,6 @@ class FacebookPixelFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'laravel-facebook-pixel';
+        return 'facebook-pixel';
     }
 }

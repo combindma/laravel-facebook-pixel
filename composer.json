@@ -21,6 +21,7 @@
         "illuminate/contracts": "^8.0"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^2.7",
         "roave/security-advisories": "dev-latest",
         "orchestra/testbench": "^6.13",
         "phpunit/phpunit": "^9.3",
