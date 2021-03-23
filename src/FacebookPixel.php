@@ -27,6 +27,7 @@ class FacebookPixel
     public function setPixelId($id): self
     {
         $this->pixelId = $id;
+
         return $this;
     }
 
@@ -38,6 +39,7 @@ class FacebookPixel
     public function setSessionKey($sessionKey):self
     {
         $this->sessionKey = $sessionKey;
+
         return $this;
     }
 
@@ -48,7 +50,7 @@ class FacebookPixel
 
     public function headContent(): string
     {
-        if (!$this->isEnabled()){
+        if (! $this->isEnabled()) {
             return '';
         }
 
@@ -78,7 +80,7 @@ class FacebookPixel
 
     public function bodyContent(): string
     {
-        if ($this->isEnabled()){
+        if ($this->isEnabled()) {
             $facebookPixelSession = session()->pull($this->sessionKey(), []);
             $pixelCode = "";
             if (count($facebookPixelSession) > 0) {
@@ -86,18 +88,20 @@ class FacebookPixel
                     $pixelCode .= "fbq('track', '" . $facebookPixel["name"] . "', " . json_encode($facebookPixel["parameters"]) . ");";
                 }
                 session()->forget($this->sessionKey());
+
                 return "<script>" . $pixelCode . "</script>";
             }
         }
+
         return '';
     }
 
     public function createEvent($eventName, $parameters = []): void
     {
         $facebookPixelSession = session($this->sessionKey());
-        $facebookPixelSession = !$facebookPixelSession ? [] : $facebookPixelSession;
+        $facebookPixelSession = ! $facebookPixelSession ? [] : $facebookPixelSession;
         $facebookPixel = [
-            "name"       => $eventName,
+            "name" => $eventName,
             "parameters" => $parameters,
         ];
         $facebookPixelSession[] = $facebookPixel;

@@ -3,8 +3,8 @@
 namespace Combindma\FacebookPixel\Tests;
 
 use Combindma\FacebookPixel\FacebookPixel;
-use Orchestra\Testbench\TestCase as Orchestra;
 use Combindma\FacebookPixel\FacebookPixelServiceProvider;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
