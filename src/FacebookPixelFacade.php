@@ -11,6 +11,6 @@ class FacebookPixelFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'facebook-pixel';
+        return 'facebookPixel';
     }
 }
