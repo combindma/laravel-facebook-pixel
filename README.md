@@ -62,6 +62,8 @@ Insert facebookPixelHead() helper after opening head tag, and facebookPixelBody(
 ### Send Pixel Event
 ```php
 facebookPixel()->createEvent($eventName, $data);
+//Or
+\FacebookPixel::createEvent($eventName, $data);
 ```
 
 

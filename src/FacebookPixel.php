@@ -8,9 +8,9 @@ class FacebookPixel
 {
     use Macroable;
 
-    protected $enabled;
-    protected $pixelId;
-    protected $sessionKey;
+    protected bool $enabled;
+    protected string $pixelId;
+    protected string $sessionKey;
 
     public function __construct()
     {
@@ -24,7 +24,7 @@ class FacebookPixel
         return $this->pixelId;
     }
 
-    public function setPixelId($id): self
+    public function setPixelId(string $id): self
     {
         $this->pixelId = $id;
 
@@ -36,7 +36,7 @@ class FacebookPixel
         return $this->sessionKey;
     }
 
-    public function setSessionKey($sessionKey):self
+    public function setSessionKey(string $sessionKey):self
     {
         $this->sessionKey = $sessionKey;
 
@@ -84,7 +84,7 @@ class FacebookPixel
             $facebookPixelSession = session()->pull($this->sessionKey(), []);
             $pixelCode = "";
             if (count($facebookPixelSession) > 0) {
-                foreach ($facebookPixelSession as $key => $facebookPixel) {
+                foreach ($facebookPixelSession as $facebookPixel) {
                     $pixelCode .= "fbq('track', '" . $facebookPixel["name"] . "', " . json_encode($facebookPixel["parameters"]) . ");";
                 }
                 session()->forget($this->sessionKey());
@@ -96,15 +96,14 @@ class FacebookPixel
         return '';
     }
 
-    public function createEvent($eventName, $parameters = []): void
+    public function createEvent(string $eventName, array $parameters = []): void
     {
         $facebookPixelSession = session($this->sessionKey());
-        $facebookPixelSession = ! $facebookPixelSession ? [] : $facebookPixelSession;
-        $facebookPixel = [
+        $facebookPixelSession = !$facebookPixelSession ? [] : $facebookPixelSession;
+        $facebookPixelSession[] = [
             "name" => $eventName,
             "parameters" => $parameters,
         ];
-        $facebookPixelSession[] = $facebookPixel;
         session([$this->sessionKey() => $facebookPixelSession]);
     }
 }
