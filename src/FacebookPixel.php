@@ -99,7 +99,7 @@ class FacebookPixel
     public function createEvent(string $eventName, array $parameters = []): void
     {
         $facebookPixelSession = session($this->sessionKey());
-        $facebookPixelSession = !$facebookPixelSession ? [] : $facebookPixelSession;
+        $facebookPixelSession = ! $facebookPixelSession ? [] : $facebookPixelSession;
         $facebookPixelSession[] = [
             "name" => $eventName,
             "parameters" => $parameters,
