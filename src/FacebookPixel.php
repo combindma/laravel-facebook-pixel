@@ -64,10 +64,7 @@ class FacebookPixel
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '". $this->pixelId() ."', {
-            em: '{customer_email}',
-            ph: '{customer_phone}',
-            });
+            fbq('init', '". $this->pixelId() ."');
             fbq('track', 'PageView');
         </script>
         <noscript>
