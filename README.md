@@ -76,7 +76,7 @@ Insert head view after opening head tag, and body view after opening body tag
 </body>
 ```
 
-Your events will also be rendered here. To add an event, use the `event()` function.
+Your events will also be rendered here. To add an event, use the `track()` function.
 
 ```php
 // HomeController.php
