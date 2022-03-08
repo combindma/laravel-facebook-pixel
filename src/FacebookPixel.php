@@ -92,7 +92,7 @@ class FacebookPixel
         if (! $this->isEnabled()) {
             return null;
         }
-        if (! $this->token()) {
+        if (empty($this->token())) {
             throw new Exception('You need to set a token in your .env file to use the Conversions API.');
         }
 
