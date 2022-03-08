@@ -23,6 +23,7 @@ class FacebookPixel
     protected string $token;
     protected string $sessionKey;
     protected EventLayer $eventLayer;
+    protected EventLayer $customEventLayer;
     protected EventLayer $flashEventLayer;
 
     public function __construct()
@@ -32,6 +33,7 @@ class FacebookPixel
         $this->token = config('facebook-pixel.token');
         $this->sessionKey = config('facebook-pixel.sessionKey');
         $this->eventLayer = new EventLayer();
+        $this->customEventLayer = new EventLayer();
         $this->flashEventLayer = new EventLayer();
     }
 
@@ -72,6 +74,15 @@ class FacebookPixel
     public function track(string $eventName, array $parameters = [])
     {
         $this->eventLayer->set($eventName, $parameters);
+    }
+
+    /**
+     * Add custom event to the event layer.
+     *
+     */
+    public function trackCustom(string $eventName, array $parameters = [])
+    {
+        $this->customEventLayer->set($eventName, $parameters);
     }
 
     /**
@@ -137,6 +148,15 @@ class FacebookPixel
     public function getEventLayer(): EventLayer
     {
         return $this->eventLayer;
+    }
+
+    /**
+     * Retrieve custom event layer.
+     *
+     */
+    public function getCustomEventLayer(): EventLayer
+    {
+        return $this->customEventLayer;
     }
 
     /**

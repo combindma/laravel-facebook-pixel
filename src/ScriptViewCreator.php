@@ -28,6 +28,7 @@ class ScriptViewCreator
             ->with('enabled', $this->facebookPixel->isEnabled())
             ->with('pixelId', $this->facebookPixel->pixelId())
             ->with('eventLayer', $this->facebookPixel->getEventLayer())
+            ->with('customEventLayer', $this->facebookPixel->getCustomEventLayer())
             ->with('email', $this->facebookPixel->getEmail());
     }
 }

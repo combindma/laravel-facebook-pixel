@@ -136,10 +136,10 @@ After a form submit, the following event will be parsed on the contact page:
 <script>
     fbq(
         'track', 'Lead', {
-            content_name: 'Auto Insurance',
-            content_category: 'Quote',
-            value: 40.00,
-            currency: 'USD'
+            'content_name': 'Auto Insurance',
+            'content_category': 'Quote',
+            'value': 40.00,
+            'currency': 'USD'
         }
     );
 </script>
@@ -167,6 +167,39 @@ FacebookPixel::flashEvent('eventName', ['attribute' => 'value']);
 FacebookPixel::flashEvent('eventName'); //without properties
 //Clear the event layer.
 FacebookPixel::clear();
+```
+
+### Custom Events
+
+You can also track a specific custom event on your website. This feature is not available for flashed events.
+
+```php
+use Combindma\FacebookPixel\Facades\FacebookPixel;
+
+// In your controller
+FacebookPixel::trackCustom('CUSTOM-EVENT-NAME', ['custom_parameter' => 'ABC', 'value' => 10.00, 'currency' => 'USD']);
+```
+
+This renders:
+
+```html
+<html>
+  <head>
+    <script>/* Facebook Pixel's base script */</script>
+    <!-- ... -->
+  </head>
+  <body>
+  <script>
+      fbq(
+          'trackCustom', 'CUSTOM-EVENT-NAME', {
+              'custom_parameter': 'ABC',
+              'value': 10.00,
+              'currency': 'USD'
+          }
+      );
+  </script>
+  <!-- ... -->
+</html>
 ```
 
 ### Advanced matching
