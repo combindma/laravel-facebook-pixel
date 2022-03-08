@@ -1,22 +1,7 @@
 <?php
 
-namespace Combindma\FacebookPixel\Tests\Features;
-
-use Combindma\FacebookPixel\Tests\TestCase;
-
-class FacebookPixelTest extends TestCase
-{
-    public function test_headContent()
-    {
-        $this->assertNotEmpty($this->facebookPixel->headContent());
-        $this->assertNotEmpty(facebookPixelHead());
-    }
-
-    public function test_bodyContent()
-    {
-        $this->facebookPixel->createEvent('viewContent', ['content_type' => 'product',]);
-        $this->assertEquals("<script>fbq('track', 'viewContent', {\"content_type\":\"product\"});</script>", $this->facebookPixel->bodyContent());
-        $this->facebookPixel->createEvent('viewContent', ['content_type' => 'product',]);
-        $this->assertEquals("<script>fbq('track', 'viewContent', {\"content_type\":\"product\"});</script>", facebookPixelBody());
-    }
-}
+it('can test if config file are set', function () {
+    $this->assertEquals('facebook_pixel_id', $this->facebookPixel->pixelId());
+    $this->assertEquals('sessionKey', $this->facebookPixel->sessionKey());
+    $this->assertTrue($this->facebookPixel->isEnabled());
+});

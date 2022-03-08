@@ -2,6 +2,16 @@
 
 namespace Combindma\FacebookPixel;
 
+use Exception;
+use FacebookAds\Api;
+use FacebookAds\Logger\CurlLogger;
+use FacebookAds\Object\ServerSide\ActionSource;
+use FacebookAds\Object\ServerSide\CustomData;
+use FacebookAds\Object\ServerSide\Event;
+use FacebookAds\Object\ServerSide\EventRequest;
+use FacebookAds\Object\ServerSide\UserData;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Traits\Macroable;
 
 class FacebookPixel
@@ -10,13 +20,19 @@ class FacebookPixel
 
     protected bool $enabled;
     protected string $pixelId;
+    protected string $token;
     protected string $sessionKey;
+    protected EventLayer $eventLayer;
+    protected EventLayer $flashEventLayer;
 
     public function __construct()
     {
         $this->enabled = config('facebook-pixel.enabled');
-        $this->setPixelId(config('facebook-pixel.facebook_pixel_id'));
-        $this->setSessionKey(config('facebook-pixel.sessionKey'));
+        $this->pixelId = config('facebook-pixel.facebook_pixel_id');
+        $this->token = config('facebook-pixel.token');
+        $this->sessionKey = config('facebook-pixel.sessionKey');
+        $this->eventLayer = new EventLayer();
+        $this->flashEventLayer = new EventLayer();
     }
 
     public function pixelId()
@@ -24,23 +40,14 @@ class FacebookPixel
         return $this->pixelId;
     }
 
-    public function setPixelId(string $id): self
-    {
-        $this->pixelId = $id;
-
-        return $this;
-    }
-
     public function sessionKey()
     {
         return $this->sessionKey;
     }
 
-    public function setSessionKey(string $sessionKey):self
+    public function token()
     {
-        $this->sessionKey = $sessionKey;
-
-        return $this;
+        return $this->token;
     }
 
     public function isEnabled()
@@ -48,59 +55,114 @@ class FacebookPixel
         return $this->enabled;
     }
 
-    public function headContent(): string
+    public function enable()
+    {
+        $this->enabled = true;
+    }
+
+    public function disable()
+    {
+        $this->enabled = false;
+    }
+
+    /**
+     * Add event to the event layer.
+     *
+     */
+    public function track(string $eventName, array $parameters = [])
+    {
+        $this->eventLayer->set($eventName, $parameters);
+    }
+
+    /**
+     * Add event data to the event layer for the next request.
+     *
+     */
+    public function flashEvent(string $eventName, array $parameters = [])
+    {
+        $this->flashEventLayer->set($eventName, $parameters);
+    }
+
+    /**
+     * Send request using Conversions API
+     *
+     */
+    public function send(string $eventName, string $sourceUrl, UserData $userData, CustomData $customData)
     {
         if (! $this->isEnabled()) {
-            return '';
+            return null;
+        }
+        if (! $this->token()) {
+            throw new Exception('You need to set a token in your .env file to use the Conversions API.');
         }
 
-        $row = "
-        <script>
-            !function(f,b,e,v,n,t,s)
-            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-            n.queue=[];t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)}(window, document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '". $this->pixelId() ."');
-            fbq('track', 'PageView');
-        </script>
-        <noscript>
-            <img height=\"1\" width=\"1\" style=\"display:none\"
-            src=\"https://www.facebook.com/tr?id=". $this->pixelId() ."&ev=PageView&noscript=1\"/>
-        </noscript>";
+        $api = Api::init(null, null, $this->token);
+        $api->setLogger(new CurlLogger());
 
-        return $row;
-    }
+        $event = (new Event())
+            ->setEventName($eventName)
+            ->setEventTime(time())
+            ->setEventSourceUrl($sourceUrl)
+            ->setUserData($userData)
+            ->setCustomData($customData)
+            ->setActionSource(ActionSource::WEBSITE);
 
-    public function bodyContent(): string
-    {
-        if ($this->isEnabled()) {
-            $facebookPixelSession = session()->pull($this->sessionKey(), []);
-            $pixelCode = "";
-            if (count($facebookPixelSession) > 0) {
-                foreach ($facebookPixelSession as $facebookPixel) {
-                    $pixelCode .= "fbq('track', '" . $facebookPixel["name"] . "', " . json_encode($facebookPixel["parameters"]) . ");";
-                }
-                session()->forget($this->sessionKey());
+        $events = [];
+        array_push($events, $event);
 
-                return "<script>" . $pixelCode . "</script>";
-            }
+        $request = (new EventRequest($this->pixelId()))->setEvents($events);
+
+        try {
+            return $request->execute();
+        } catch (Exception $e) {
+            Log::error($e);
         }
 
-        return '';
+        return null;
     }
 
-    public function createEvent(string $eventName, array $parameters = []): void
+    /**
+     * Merge array data with the event layer.
+     *
+     */
+    public function merge(array $eventSession)
     {
-        $facebookPixelSession = session($this->sessionKey());
-        $facebookPixelSession = ! $facebookPixelSession ? [] : $facebookPixelSession;
-        $facebookPixelSession[] = [
-            "name" => $eventName,
-            "parameters" => $parameters,
-        ];
-        session([$this->sessionKey() => $facebookPixelSession]);
+        $this->eventLayer->merge($eventSession);
+    }
+
+    /**
+     * Retrieve the event layer.
+     *
+     */
+    public function getEventLayer(): EventLayer
+    {
+        return $this->eventLayer;
+    }
+
+    /**
+     * Retrieve the event layer's data for the next request.
+     *
+     */
+    public function getFlashedEvent()
+    {
+        return $this->flashEventLayer->toArray();
+    }
+
+    /**
+     * Retrieve the email to use it advanced matching.
+     * To use advanced matching we will get the email if the user is authenticated
+     */
+    public function getEmail()
+    {
+        if (Auth::check()) {
+            return Auth::user()->email;
+        }
+
+        return null;
+    }
+
+    public function clear()
+    {
+        $this->eventLayer = new EventLayer();
     }
 }

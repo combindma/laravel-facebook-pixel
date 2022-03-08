@@ -1,16 +1,16 @@
 <?php
 
-namespace Combindma\FacebookPixel;
+namespace Combindma\FacebookPixel\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
  * @see \Combindma\FacebookPixel\FacebookPixel
  */
-class FacebookPixelFacade extends Facade
+class FacebookPixel extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'facebookPixel';
+        return \Combindma\FacebookPixel\FacebookPixel::class;
     }
 }

@@ -1,3 +1,3 @@
 # Security Policy
 
-If you discover any security related issues, please report it using the issue tracker.
+If you discover any security related issues, please email webmaster@combind.ma instead of using the issue tracker.

@@ -10,7 +10,7 @@ class TestCase extends Orchestra
 {
     public $facebookPixel;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
     }

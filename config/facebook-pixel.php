@@ -12,6 +12,11 @@ return [
     'sessionKey' => env('FACEBOOK_PIXEL_SESSION_KEY', config('app.name').'_facebookPixel'),
 
     /*
+     * To use the Conversions API, you need an access token. For Documentation please see: https://developers.facebook.com/docs/marketing-api/conversions-api/get-started
+     */
+    'token' => env('FACEBOOK_PIXEL_TOKEN', ''), //Only if you plan using Conversions API for server events
+
+    /*
      * Enable or disable script rendering. Useful for local development.
      */
     'enabled' => env('FACEBOOK_PIXEL_ENABLED', false),
