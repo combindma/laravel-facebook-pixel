@@ -7,14 +7,17 @@ use Illuminate\View\View;
 
 class ScriptViewCreator
 {
-    protected $facebookPixel;
+    protected FacebookPixel $facebookPixel;
 
     public function __construct(FacebookPixel $facebookPixel)
     {
         $this->facebookPixel = $facebookPixel;
     }
 
-    public function create(View $view)
+    /**
+     * @throws Exception
+     */
+    public function create(View $view): void
     {
         if ($this->facebookPixel->isEnabled() && empty($this->facebookPixel->pixelId())) {
             throw new Exception('You need to set a Facebook Pixel Id in .env file.');

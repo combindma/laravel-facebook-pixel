@@ -153,10 +153,12 @@ After a form submit, the following event will be parsed on the contact page:
 use Combindma\FacebookPixel\Facades\FacebookPixel;
 
 // Retrieve your Pixel id
-$id = FacebookPixel::id(); // XXXXXXXX
+$id = FacebookPixel::pixelId();
+// Set Pixel id on the fly
+$id = FacebookPixel::setPixelId('XXXXXXXX');
 // Check whether script rendering is enabled
 $enabled = FacebookPixel::isEnabled(); // true|false
-// Enable and disable script rendering
+// Enable and disable script rendering on the fly
 FacebookPixel::enable();
 FacebookPixel::disable();
 // Add event to the event layer (automatically renders right before the pixel script). Setting new values merges them with the previous ones.
@@ -285,7 +287,7 @@ composer test
 
 ## Contributing
 
-Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security Vulnerabilities
 

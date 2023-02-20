@@ -19,11 +19,17 @@ class FacebookPixel
     use Macroable;
 
     protected bool $enabled;
+
     protected string $pixelId;
+
     protected string $token;
+
     protected string $sessionKey;
+
     protected EventLayer $eventLayer;
+
     protected EventLayer $customEventLayer;
+
     protected EventLayer $flashEventLayer;
 
     public function __construct()
@@ -57,46 +63,47 @@ class FacebookPixel
         return $this->enabled;
     }
 
-    public function enable()
+    public function enable(): void
     {
         $this->enabled = true;
     }
 
-    public function disable()
+    public function disable(): void
     {
         $this->enabled = false;
     }
 
+    public function setPixelId(int|string $id): void
+    {
+        $this->pixelId = $id;
+    }
+
     /**
      * Add event to the event layer.
-     *
      */
-    public function track(string $eventName, array $parameters = [])
+    public function track(string $eventName, array $parameters = []): void
     {
         $this->eventLayer->set($eventName, $parameters);
     }
 
     /**
      * Add custom event to the event layer.
-     *
      */
-    public function trackCustom(string $eventName, array $parameters = [])
+    public function trackCustom(string $eventName, array $parameters = []): void
     {
         $this->customEventLayer->set($eventName, $parameters);
     }
 
     /**
      * Add event data to the event layer for the next request.
-     *
      */
-    public function flashEvent(string $eventName, array $parameters = [])
+    public function flashEvent(string $eventName, array $parameters = []): void
     {
         $this->flashEventLayer->set($eventName, $parameters);
     }
 
     /**
      * Send request using Conversions API
-     *
      */
     public function send(string $eventName, string $sourceUrl, UserData $userData, CustomData $customData)
     {
@@ -134,7 +141,6 @@ class FacebookPixel
 
     /**
      * Merge array data with the event layer.
-     *
      */
     public function merge(array $eventSession)
     {
@@ -143,7 +149,6 @@ class FacebookPixel
 
     /**
      * Retrieve the event layer.
-     *
      */
     public function getEventLayer(): EventLayer
     {
@@ -152,7 +157,6 @@ class FacebookPixel
 
     /**
      * Retrieve custom event layer.
-     *
      */
     public function getCustomEventLayer(): EventLayer
     {
@@ -161,9 +165,8 @@ class FacebookPixel
 
     /**
      * Retrieve the event layer's data for the next request.
-     *
      */
-    public function getFlashedEvent()
+    public function getFlashedEvent(): array
     {
         return $this->flashEventLayer->toArray();
     }
@@ -181,7 +184,7 @@ class FacebookPixel
         return null;
     }
 
-    public function clear()
+    public function clear(): void
     {
         $this->eventLayer = new EventLayer();
     }

@@ -8,14 +8,9 @@ use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
-    public $facebookPixel;
+    public FacebookPixel $facebookPixel;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [
             FacebookPixelServiceProvider::class,

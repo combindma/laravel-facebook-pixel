@@ -8,6 +8,7 @@ use Illuminate\Session\Store as Session;
 class FacebookPixelMiddleware
 {
     protected $facebookPixel;
+
     protected $session;
 
     public function __construct(FacebookPixel $facebookPixel, Session $session)
