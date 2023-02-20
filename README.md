@@ -155,7 +155,7 @@ use Combindma\FacebookPixel\Facades\FacebookPixel;
 // Retrieve your Pixel id
 $id = FacebookPixel::pixelId();
 // Set Pixel id on the fly
-$id = FacebookPixel::setPixelId('XXXXXXXX');
+FacebookPixel::setPixelId('XXXXXXXX');
 // Check whether script rendering is enabled
 $enabled = FacebookPixel::isEnabled(); // true|false
 // Enable and disable script rendering on the fly
