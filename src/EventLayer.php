@@ -13,9 +13,9 @@ class EventLayer
         $this->data = $data;
     }
 
-    public function set(string $eventName, array $parameters = []): void
+    public function set(string $eventName, array $parameters = [], string $eventID = null): void
     {
-        $this->data = Arr::add($this->data, $eventName, $parameters);
+        $this->data = Arr::add($this->data, $eventName, ['data' => $parameters, 'event_id' => $eventID]);
     }
 
     public function merge(array $newData): void

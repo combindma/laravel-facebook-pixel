@@ -7,6 +7,31 @@
 
 A Complete Facebook Pixel implementation for your Laravel application.
 
+## Introduction
+
+This package provides a smooth integration of Meta Pixel, along with a straightforward implementation of the latest Conversions API, enhancing your overall experience.This package provides a smooth integration of Pixel Meta, along with a straightforward implementation of the latest Conversions API, enhancing your overall experience.
+
+
+
+## Pre-requisites
+
+### Register a Meta Pixel
+
+To get started with the pixel Meta, you must have a Meta pixel registered: <a href="https://web.facebook.com/business/help/952192354843755" target="_blank">Read this guide</a>.
+
+### Conversions API
+
+If you plan to use Conversions API then you need to:
+
+#### Obtain An Access Token
+To use the Conversions API, you need to generate an access token, which will be passed as a parameter in every API call.
+
+Refer to 
+<a href="https://developers.facebook.com/docs/marketing-api/conversions-api/get-started" target="_blank">
+Conversions API Guide</a> to learn more.
+
+
+
 ## Installation
 
 You can install the package via composer:
@@ -59,7 +84,7 @@ protected $middleware = [
 ];
 ``` 
 
-## Usage
+## Usage - Meta Pixel
 
 ### Include scripts in Blade
 
@@ -79,13 +104,13 @@ Insert head view after opening head tag, and body view after opening body tag
 Your events will also be rendered here. To add an event, use the `track()` function.
 
 ```php
-// HomeController.php
+// CheckoutController.php
 use Combindma\FacebookPixel\Facades\FacebookPixel;
 
 public function index()
 {
     FacebookPixel::track('Purchase', ['currency' => 'USD', 'value' => 30.00]);
-    return view('home');
+    return view('thank-you');
 }
 ```
 
@@ -103,6 +128,14 @@ This renders:
 </html>
 ```
 
+You can also specify a unique event ID for any of your events so that, if you plan using the conversions API you avoid duplications.
+
+```php
+//For example your order id
+FacebookPixel::track('Purchase', ['currency' => 'USD', 'value' => 30.00], '123456');
+```
+
+
 #### Flashing data for the next request
 
 The package can also set event to render on the next request. This is useful for setting data after an internal redirect.
@@ -117,7 +150,7 @@ public function postContact()
     FacebookPixel::flashEvent('Lead', [
         'content_name' => 'Auto Insurance',
         'content_category' => 'Quote',
-        'value' => 40.00,
+        'value' => 400.00,
         'currency' => 'USD'
     ]);
     return redirect()->action('ContactController@getContact');
@@ -147,7 +180,7 @@ After a form submit, the following event will be parsed on the contact page:
 </html>
 ```
 
-### Other Simple Methods
+### Available Methods
 
 ```php
 use Combindma\FacebookPixel\Facades\FacebookPixel;
@@ -163,9 +196,12 @@ FacebookPixel::enable();
 FacebookPixel::disable();
 // Add event to the event layer (automatically renders right before the pixel script). Setting new values merges them with the previous ones.
 FacebookPixel::track('eventName', ['attribute' => 'value']);
+FacebookPixel::track('eventName', ['attribute' => 'value'], 'event_id'); //with an event id
 FacebookPixel::track('eventName'); //without properties 
+FacebookPixel::track('eventName', [], 'event_id'); //with an event id but without properties
 // Flash event for the next request. Setting new values merges them with the previous ones.
 FacebookPixel::flashEvent('eventName', ['attribute' => 'value']);
+FacebookPixel::flashEvent('eventName', ['attribute' => 'value'], 'event_id'); //with an event id
 FacebookPixel::flashEvent('eventName'); //without properties
 //Clear the event layer.
 FacebookPixel::clear();
@@ -180,6 +216,8 @@ use Combindma\FacebookPixel\Facades\FacebookPixel;
 
 // In your controller
 FacebookPixel::trackCustom('CUSTOM-EVENT-NAME', ['custom_parameter' => 'ABC', 'value' => 10.00, 'currency' => 'USD']);
+//With an event ID
+FacebookPixel::trackCustom('CUSTOM-EVENT-NAME', ['custom_parameter' => 'ABC', 'value' => 10.00, 'currency' => 'USD'], 'EVENT_ID');
 ```
 
 This renders:
@@ -192,13 +230,9 @@ This renders:
   </head>
   <body>
   <script>
-      fbq(
-          'trackCustom', 'CUSTOM-EVENT-NAME', {
-              'custom_parameter': 'ABC',
-              'value': 10.00,
-              'currency': 'USD'
-          }
-      );
+      fbq('trackCustom', 'CUSTOM-EVENT-NAME', {'custom_parameter': 'ABC', 'value': 10.00, 'currency': 'USD'});
+      /* If you specify the event ID */
+      fbq('trackCustom', 'CUSTOM-EVENT-NAME', {'custom_parameter': 'ABC', 'value': 10.00, 'currency': 'USD'}, { eventID : 'EVENT_ID' });
   </script>
   <!-- ... -->
 </html>
@@ -206,7 +240,7 @@ This renders:
 
 ### Advanced matching
 
-This package provides by default advanced matching. We retrieve the email from authenticated user and include it in the Pixel base code fbq('init') function call as a third parameter.
+This package provides by default advanced matching. We retrieve the email and the user id from authenticated user and include it in the Pixel base code fbq('init') function call as a third parameter.
 
 ```html
 <html>
@@ -215,7 +249,8 @@ This package provides by default advanced matching. We retrieve the email from a
         /* Facebook Pixel's base script */
         <!-- ... -->
         fbq('init', '{PixelID}', {
-            em: 'email@email.com', //Email provided by Auth::user()->email
+            em: 'email@email.com', //Email provided with Auth::user()->email
+            external_id: 12345, //User id provided with Auth::id()
         });
     </script>
     <!-- ... -->
@@ -244,9 +279,14 @@ FacebookPixel::macro('purchase', function ($product) {
 FacebookPixel::purchase($product);
 ```
 
-### Conversions API
 
-If you plan on using [Conversions API](https://developers.facebook.com/docs/marketing-api/conversions-api/get-started) functionalities. This is how you can start:
+## Usage - Conversions API
+
+If you plan on using [Conversions API](https://developers.facebook.com/docs/marketing-api/conversions-api/get-started) functionalities. Yous should specify the token in your .env file first.
+
+For every request yous should specify a unique event id for handling Pixel Duplicate Events and Conversions API.
+
+This is how you can start:
 
 ```php
 use Combindma\FacebookPixel\Facades\FacebookPixel;
@@ -255,15 +295,9 @@ use FacebookAds\Object\ServerSide\CustomData;
 use FacebookAds\Object\ServerSide\DeliveryCategory;
 use FacebookAds\Object\ServerSide\UserData;
 
-//in your controller file
-$user_data = (new UserData())
-    ->setEmails(array('joe@eg.com'))
-    ->setPhones(array('12345678901', '14251234567'))
-    // It is recommended to send Client IP and User Agent for Conversions API Events.
-    ->setClientIpAddress($_SERVER['REMOTE_ADDR'])
-    ->setClientUserAgent($_SERVER['HTTP_USER_AGENT'])
-    ->setFbc('fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890')
-    ->setFbp('fb.1.1558571054389.1098115397');
+//Prepare User Data first.
+// By default, the IP Address, User Agent and fbc/fbp cookies are added.
+$user_data = FacebookPixel::userData()->setEmail('joe@eg.com')->setPhone('12345678901');
 
 $content = (new Content())
     ->setProductId('product123')
@@ -275,9 +309,20 @@ $custom_data = (new CustomData())
     ->setCurrency('usd')
     ->setValue(123.45);
     
+$eventId = uniqid('prefix_');
+    
 //send request
-FacebookPixel::send('Purchase', 'http://jaspers-market.com/product/123', $user_data, $custom_data);
+FacebookPixel::send('Purchase', $eventId ,$custom_data, $user_data);
 ```
+
+If you don't specify the $user_data parameter, by default we retrieve the email & the id from Auth::user() if the user is authenticated.
+We use the user id as a same external_id in Meta Pixel and conversions API
+
+```php
+FacebookPixel::send('Purchase', $eventId, $custom_data);
+```
+
+You can use the [Playload Helper](https://developers.facebook.com/docs/marketing-api/conversions-api/payload-helper) to learn more about the requests to send.
 
 ## Testing
 

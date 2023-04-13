@@ -31,7 +31,7 @@ class FacebookPixelServiceProvider extends PackageServiceProvider
 
     public function registeringPackage()
     {
-        $this->app->singleton(FacebookPixel::class, function ($app) {
+        $this->app->singleton(FacebookPixel::class, function () {
             return new FacebookPixel();
         });
     }

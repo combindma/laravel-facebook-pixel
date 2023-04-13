@@ -17,7 +17,7 @@ class ScriptViewCreator
     /**
      * @throws Exception
      */
-    public function create(View $view): void
+    public function create(View $view): ?View
     {
         if ($this->facebookPixel->isEnabled() && empty($this->facebookPixel->pixelId())) {
             throw new Exception('You need to set a Facebook Pixel Id in .env file.');
@@ -27,11 +27,11 @@ class ScriptViewCreator
             throw new Exception('You need to set a session key for Facebook Pixel in .env file.');
         }
 
-        $view
+        return $view
             ->with('enabled', $this->facebookPixel->isEnabled())
             ->with('pixelId', $this->facebookPixel->pixelId())
             ->with('eventLayer', $this->facebookPixel->getEventLayer())
             ->with('customEventLayer', $this->facebookPixel->getCustomEventLayer())
-            ->with('email', $this->facebookPixel->getEmail());
+            ->with('userData', $this->facebookPixel->getUser());
     }
 }

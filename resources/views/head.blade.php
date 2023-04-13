@@ -1,5 +1,5 @@
 @if($enabled)
-    <!-- Facebook Pixel Code -->
+    <!-- Meta Pixel Code -->
     <script>
         !function(f,b,e,v,n,t,s)
         {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -9,8 +9,8 @@
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-    @if($email)
-        fbq('init', '{{ $pixelId }}', {em: '{{ strtolower($email) }}'}); //Values will be hashed automatically by the pixel using SHA-256
+    @if($userData)
+        fbq('init', '{{ $pixelId }}', {em: '{{ $userData['em'] }}', external_id: {{ $userData['external_id'] }}});
     @else
         fbq('init', '{{ $pixelId }}');
     @endif
@@ -20,5 +20,5 @@
         <img height="1" width="1" style="display:none"
              src="https://www.facebook.com/tr?id={{ $pixelId }}&ev=PageView&noscript=1"/>
     </noscript>
-    <!-- End Facebook Pixel Code -->
+    <!-- End Meta Pixel Code -->
 @endif
