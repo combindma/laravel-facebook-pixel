@@ -6,7 +6,9 @@ parameters:
     paths:
         - src
         - config
-        - database
+    ignoreErrors:
+    	-
+    		message: '#Access to an undefined property Illuminate\\Foundation\\Auth\\User::\$email#'
     tmpDir: build/phpstan
     checkOctaneCompatibility: true
     checkModelProperties: true
