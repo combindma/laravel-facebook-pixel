@@ -9,7 +9,7 @@ A Complete Facebook Pixel implementation for your Laravel application.
 
 ## Introduction
 
-This package provides a smooth integration of Meta Pixel, along with a straightforward implementation of the latest Conversions API, enhancing your overall experience.This package provides a smooth integration of Pixel Meta, along with a straightforward implementation of the latest Conversions API, enhancing your overall experience.
+This package provides a smooth integration of Meta Pixel, along with a straightforward implementation of the latest Conversions API, enhancing your overall experience.
 
 
 
