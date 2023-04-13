@@ -69,6 +69,11 @@ return [
      * Enable or disable script rendering. Useful for local development.
      */
     'enabled' => env('FACEBOOK_PIXEL_ENABLED', false),
+    
+    /*
+     * This is used to test server events
+     */
+    'test_event_code' => env('FACEBOOK_TEST_EVENT_CODE')
 ];
 ```
 
@@ -321,6 +326,10 @@ We use the user id as a same external_id in Meta Pixel and conversions API
 ```php
 FacebookPixel::send('Purchase', $eventId, $custom_data);
 ```
+
+If you want to test server events, you need to specify the FACEBOOK_TEST_EVENT_CODE in your .env file. By default, this test code will be sent in all API request. 
+
+So Don't forget to delete after you finish your server tests.
 
 You can use the [Playload Helper](https://developers.facebook.com/docs/marketing-api/conversions-api/payload-helper) to learn more about the requests to send.
 

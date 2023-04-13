@@ -26,9 +26,11 @@ class FacebookPixel
 
     private string $pixelId;
 
-    private string $token;
+    private ?string $token;
 
     private string $sessionKey;
+
+    private ?string $testEventCode;
 
     private EventLayer $eventLayer;
 
@@ -44,6 +46,7 @@ class FacebookPixel
         $this->pixelId = config('facebook-pixel.facebook_pixel_id');
         $this->token = config('facebook-pixel.token');
         $this->sessionKey = config('facebook-pixel.sessionKey');
+        $this->testEventCode = config('facebook-pixel.test_event_code');
         $this->eventLayer = new EventLayer();
         $this->customEventLayer = new EventLayer();
         $this->flashEventLayer = new EventLayer();
@@ -63,6 +66,11 @@ class FacebookPixel
     public function token()
     {
         return $this->token;
+    }
+
+    public function testEnabled(): bool
+    {
+        return (bool) $this->testEventCode;
     }
 
     public function isEnabled(): bool
@@ -153,6 +161,10 @@ class FacebookPixel
             ->setActionSource(ActionSource::WEBSITE);
 
         $request = (new EventRequest($this->pixelId()))->setEvents([$event]);
+
+        if ($this->testEnabled()) {
+            $request->setTestEventCode($this->testEventCode);
+        }
 
         try {
             return $request->execute();

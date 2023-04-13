@@ -20,4 +20,9 @@ return [
      * Enable or disable script rendering. Useful for local development.
      */
     'enabled' => env('FACEBOOK_PIXEL_ENABLED', false),
+
+    /*
+     * This is used to test server events
+     */
+    'test_event_code' => env('FACEBOOK_TEST_EVENT_CODE'),
 ];
