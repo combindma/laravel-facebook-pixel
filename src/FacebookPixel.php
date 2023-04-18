@@ -119,10 +119,10 @@ class FacebookPixel
 
     public function userData(): UserData
     {
-        if ($userData = $this->getUser()) {
+        if ($user = $this->getUser()) {
             return $this->userData
-                ->setEmail($userData['em'])
-                ->setExternalId($userData['external_id'])
+                ->setEmail($user['em'])
+                ->setExternalId($user['external_id'])
                 ->setClientIpAddress(Request::ip())
                 ->setClientUserAgent(Request::userAgent())
                 ->setFbc(Arr::get($_COOKIE, '_fbc'))
