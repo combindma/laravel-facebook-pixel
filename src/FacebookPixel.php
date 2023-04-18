@@ -11,8 +11,8 @@ use FacebookAds\Object\ServerSide\Event;
 use FacebookAds\Object\ServerSide\EventRequest;
 use FacebookAds\Object\ServerSide\EventResponse;
 use FacebookAds\Object\ServerSide\UserData;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
@@ -125,15 +125,15 @@ class FacebookPixel
                 ->setExternalId($userData['external_id'])
                 ->setClientIpAddress(Request::ip())
                 ->setClientUserAgent(Request::userAgent())
-                ->setFbc(Cookie::get('_fbc'))
-                ->setFbp(Cookie::get('_fbp'));
+                ->setFbc(Arr::get($_COOKIE, '_fbc'))
+                ->setFbp(Arr::get($_COOKIE, '_fbp'));
         }
 
         return $this->userData
             ->setClientIpAddress(Request::ip())
             ->setClientUserAgent(Request::userAgent())
-            ->setFbc(Cookie::get('_fbc'))
-            ->setFbp(Cookie::get('_fbp'));
+            ->setFbc(Arr::get($_COOKIE, '_fbc'))
+            ->setFbp(Arr::get($_COOKIE, '_fbp'));
     }
 
     /**
