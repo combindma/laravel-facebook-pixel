@@ -22,6 +22,11 @@ return [
     'enabled' => env('FACEBOOK_PIXEL_ENABLED', false),
 
     /*
+     * Enable or disable advanced matching. Useful for adjusting user privacy.
+     */
+    'advanced_matching_enabled' => env('FACEBOOK_PIXEL_ADVANCED_MATCHING_ENABLED', true),
+
+    /*
      * This is used to test server events
      */
     'test_event_code' => env('FACEBOOK_TEST_EVENT_CODE'),

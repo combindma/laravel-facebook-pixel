@@ -9,7 +9,7 @@
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-    @if($userData)
+    @if($advancedMatchingEnabled && $userData)
         fbq('init', '{{ $pixelId }}', {em: '{{ $userData['em'] }}', external_id: {{ $userData['external_id'] }}});
     @else
         fbq('init', '{{ $pixelId }}');

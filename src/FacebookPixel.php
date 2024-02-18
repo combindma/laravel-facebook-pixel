@@ -24,6 +24,8 @@ class FacebookPixel
 
     private bool $enabled;
 
+    private bool $advancedMatchingEnabled;
+
     private string $pixelId;
 
     private ?string $token;
@@ -43,6 +45,7 @@ class FacebookPixel
     public function __construct()
     {
         $this->enabled = config('facebook-pixel.enabled');
+        $this->advancedMatchingEnabled = config('facebook-pixel.advanced_matching_enabled');
         $this->pixelId = config('facebook-pixel.facebook_pixel_id');
         $this->token = config('facebook-pixel.token');
         $this->sessionKey = config('facebook-pixel.sessionKey');
@@ -76,6 +79,11 @@ class FacebookPixel
     public function isEnabled(): bool
     {
         return $this->enabled;
+    }
+
+    public function isAdvancedMatchingEnabled(): bool
+    {
+        return $this->advancedMatchingEnabled;
     }
 
     public function enable(): void

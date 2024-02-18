@@ -29,6 +29,7 @@ class ScriptViewCreator
 
         return $view
             ->with('enabled', $this->facebookPixel->isEnabled())
+            ->with('advancedMatchingEnabled', $this->facebookPixel->isAdvancedMatchingEnabled())
             ->with('pixelId', $this->facebookPixel->pixelId())
             ->with('eventLayer', $this->facebookPixel->getEventLayer())
             ->with('customEventLayer', $this->facebookPixel->getCustomEventLayer())
