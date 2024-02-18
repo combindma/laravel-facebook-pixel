@@ -69,7 +69,12 @@ return [
      * Enable or disable script rendering. Useful for local development.
      */
     'enabled' => env('FACEBOOK_PIXEL_ENABLED', false),
-    
+
+    /*
+     * Enable or disable advanced matching. Useful for adjusting user privacy.
+     */
+    'advanced_matching_enabled' => env('FACEBOOK_PIXEL_ADVANCED_MATCHING_ENABLED', true),
+
     /*
      * This is used to test server events
      */
