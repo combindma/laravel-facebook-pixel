@@ -96,7 +96,7 @@ class FacebookPixel
     /**
      * Add event to the event layer.
      */
-    public function track(string $eventName, array $parameters = [], string $eventId = null): void
+    public function track(string $eventName, array $parameters = [], ?string $eventId = null): void
     {
         $this->eventLayer->set($eventName, $parameters, $eventId);
     }
@@ -104,7 +104,7 @@ class FacebookPixel
     /**
      * Add custom event to the event layer.
      */
-    public function trackCustom(string $eventName, array $parameters = [], string $eventId = null): void
+    public function trackCustom(string $eventName, array $parameters = [], ?string $eventId = null): void
     {
         $this->customEventLayer->set($eventName, $parameters, $eventId);
     }
@@ -112,7 +112,7 @@ class FacebookPixel
     /**
      * Add event data to the event layer for the next request.
      */
-    public function flashEvent(string $eventName, array $parameters = [], string $eventId = null): void
+    public function flashEvent(string $eventName, array $parameters = [], ?string $eventId = null): void
     {
         $this->flashEventLayer->set($eventName, $parameters, $eventId);
     }
@@ -139,7 +139,7 @@ class FacebookPixel
     /**
      * Send request using Conversions API
      */
-    public function send(string $eventName, string $eventID, CustomData $customData, UserData $userData = null): ?EventResponse
+    public function send(string $eventName, string $eventID, CustomData $customData, ?UserData $userData = null): ?EventResponse
     {
         if (! $this->isEnabled()) {
             return null;
