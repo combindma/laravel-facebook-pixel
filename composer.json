@@ -1,9 +1,9 @@
 {
     "name": "combindma/laravel-facebook-pixel",
-    "description": "Facebook Pixel integration for Laravel",
+    "description": "Meta pixel integration for Laravel",
     "keywords": [
         "combindma",
-        "facebook-pixel",
+        "meta-pixel",
         "laravel"
     ],
     "homepage": "https://github.com/combindma/laravel-facebook-pixel",
@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "facebook/php-business-sdk": "^19.0",
         "illuminate/contracts": "^10.0|^11.0",
         "spatie/laravel-package-tools": "^1.11"

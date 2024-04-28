@@ -18,11 +18,13 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Traits\Macroable;
 
-class FacebookPixel
+class MetaPixel
 {
     use Macroable;
 
     private bool $enabled;
+
+    private bool $advancedMatchingEnabled;
 
     private string $pixelId;
 
@@ -42,11 +44,12 @@ class FacebookPixel
 
     public function __construct()
     {
-        $this->enabled = config('facebook-pixel.enabled');
-        $this->pixelId = config('facebook-pixel.facebook_pixel_id');
-        $this->token = config('facebook-pixel.token');
-        $this->sessionKey = config('facebook-pixel.sessionKey');
-        $this->testEventCode = config('facebook-pixel.test_event_code');
+        $this->enabled = config('meta-pixel.enabled');
+        $this->advancedMatchingEnabled = config('meta-pixel.advanced_matching_enabled');
+        $this->pixelId = config('meta-pixel.pixel_id');
+        $this->token = config('meta-pixel.token');
+        $this->sessionKey = config('meta-pixel.session_key');
+        $this->testEventCode = config('meta-pixel.test_event_code');
         $this->eventLayer = new EventLayer();
         $this->customEventLayer = new EventLayer();
         $this->flashEventLayer = new EventLayer();
@@ -76,6 +79,11 @@ class FacebookPixel
     public function isEnabled(): bool
     {
         return $this->enabled;
+    }
+
+    public function isAdvancedMatchingEnabled(): bool
+    {
+        return $this->advancedMatchingEnabled;
     }
 
     public function enable(): void
@@ -213,7 +221,7 @@ class FacebookPixel
      */
     public function getUser(): ?array
     {
-        if (Auth::check()) {
+        if ($this->isAdvancedMatchingEnabled() && Auth::check()) {
             return [
                 'em' => strtolower(Auth::user()->email),
                 'external_id' => Auth::user()->id,

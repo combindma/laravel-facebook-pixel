@@ -1,4 +1,4 @@
-@if($enabled)
+@if($metaPixel->isEnabled())
     <!-- Meta Pixel Code -->
     <script>
         !function(f,b,e,v,n,t,s)
@@ -9,16 +9,19 @@
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-    @if($userData)
-        fbq('init', '{{ $pixelId }}', {em: '{{ $userData['em'] }}', external_id: {{ $userData['external_id'] }}});
+    @if($user = $metaPixel->getUser())
+        @if($userIdAsString)
+            fbq('init', '{{ $metaPixel->pixelId() }}', {em: '{{ $user['em'] }}', external_id: '{{ $user['external_id'] }}'});
+        @else
+            fbq('init', '{{ $metaPixel->pixelId() }}', {em: '{{ $user['em'] }}', external_id: {{ $user['external_id'] }}});
+        @endif
     @else
-        fbq('init', '{{ $pixelId }}');
+        fbq('init', '{{ $metaPixel->pixelId() }}');
     @endif
         fbq('track', 'PageView');
     </script>
     <noscript>
-        <img height="1" width="1" style="display:none"
-             src="https://www.facebook.com/tr?id={{ $pixelId }}&ev=PageView&noscript=1"/>
+        <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ $metaPixel->pixelId() }}&ev=PageView&noscript=1"/>
     </noscript>
     <!-- End Meta Pixel Code -->
 @endif

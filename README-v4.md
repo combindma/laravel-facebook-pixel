@@ -1,27 +1,21 @@
-# Meta Pixel integration for Laravel
+# Facebook Pixel integration for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/combindma/laravel-facebook-pixel.svg?style=flat-square)](https://packagist.org/packages/combindma/laravel-facebook-pixel)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/combindma/laravel-facebook-pixel/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/combindma/laravel-facebook-pixel/actions?query=workflow%3ATests+branch%3Amaster)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/combindma/laravel-facebook-pixel/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/combindma/laravel-facebook-pixel/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
 [![Total Downloads](https://img.shields.io/packagist/dt/combindma/laravel-facebook-pixel.svg?style=flat-square)](https://packagist.org/packages/combindma/laravel-facebook-pixel)
 
-A Complete Meta pixel implementation for your Laravel application.
+A Complete Facebook Pixel implementation for your Laravel application.
 
 ## Introduction
 
 This package provides a smooth integration of Meta Pixel, along with a straightforward implementation of the latest Conversions API, enhancing your overall experience.
-- [Documentation for version 4.0 - older version](README-v4.md)
-
-## Upgrading to Version 5
-
-If you are upgrading from version 4, please refer to our [Version 5 Migration Guide](upgrade-v4-to-v5.md) for detailed instructions on how to make a smooth transition.
-
 
 ## Pre-requisites
 
 ### Register a Meta Pixel
 
-To get started with the Meta pixel, you must have a pixel registered: [Read this guide](https://web.facebook.com/business/help/952192354843755).
+To get started with the pixel Meta, you must have a Meta pixel registered: <a href="https://web.facebook.com/business/help/952192354843755" target="_blank">Read this guide</a>.
 
 ### Conversions API
 
@@ -30,7 +24,10 @@ If you plan to use Conversions API then you need to:
 #### Obtain An Access Token
 To use the Conversions API, you need to generate an access token, which will be passed as a parameter in every API call.
 
-Refer to [Conversions API Guide](https://developers.facebook.com/docs/marketing-api/conversions-api/get-started) to learn more.
+Refer to 
+<a href="https://developers.facebook.com/docs/marketing-api/conversions-api/get-started" target="_blank">
+Conversions API Guide</a> to learn more.
+
 
 
 ## Installation
@@ -41,16 +38,10 @@ You can install the package via composer:
 composer require combindma/laravel-facebook-pixel
 ```
 
-Optionally, you can publish the views using:
-
-```bash
-php artisan vendor:publish --tag="meta-pixel-views"
-```
-
 You can publish the config file with:
 
 ```bash
-php artisan vendor:publish --tag="meta-pixel-config"
+php artisan vendor:publish --tag="facebook-pixel-config"
 ```
 
 This is the contents of the published config file:
@@ -58,51 +49,42 @@ This is the contents of the published config file:
 ```php
 return [
    /*
-     * The Meta pixel id, should be a code that looks something like "1202417153106158".
+     * The Facebook Pixel id, should be a code that looks something like "XXXXXXXXXXXXXXXX".
      */
-    'pixel_id' => env('META_PIXEL_ID', ''),
+    'facebook_pixel_id' => env('FACEBOOK_PIXEL_ID', ''),
 
     /*
      * The key under which data is saved to the session with flash.
      */
-    'session_key' => env('META_PIXEL_SESSION_KEY', config('app.name').'_metaPixel'),
+    'sessionKey' => env('FACEBOOK_PIXEL_SESSION_KEY', config('app.name').'_facebookPixel'),
 
     /*
-     * Only if you plan using Conversions API for server events
      * To use the Conversions API, you need an access token. For Documentation please see: https://developers.facebook.com/docs/marketing-api/conversions-api/get-started
      */
-    'token' => env('META_PIXEL_TOKEN', ''),
-
-    /*
-     * Enable or disable advanced matching. Useful for adjusting user privacy.
-     */
-    'advanced_matching_enabled' => env('META_PIXEL_ADVANCED_MATCHING_ENABLED', true),
+    'token' => env('FACEBOOK_PIXEL_TOKEN', ''), //Only if you plan using Conversions API for server events
 
     /*
      * Enable or disable script rendering. Useful for local development.
      */
-    'enabled' => env('META_PIXEL_ENABLED', false),
-
+    'enabled' => env('FACEBOOK_PIXEL_ENABLED', false),
+    
     /*
      * This is used to test server events
      */
-    'test_event_code' => env('META_TEST_EVENT_CODE'),
+    'test_event_code' => env('FACEBOOK_TEST_EVENT_CODE')
 ];
 ```
 
-If you plan on using the [flash-functionality](#flashing-data-for-the-next-request) you must register the MetaPixelMiddleware:
+If you plan on using the [flash-functionality](#flashing-data-for-the-next-request) you must install the FacebookPixelMiddleware, after the StartSession middleware:
 
-Global Middleware:
 ```php
-->withMiddleware(function (Middleware $middleware) {
-     $middleware->append(MetaPixelMiddleware::class);
-})
-``` 
-Or Assigning Middleware to Routes (recommended if you have admin routes):
-```php
-Route::group(['middleware' => [MetaPixelMiddleware::class]], static function () {
-
-});
+// app/Http/Kernel.php
+protected $middleware = [
+    ...
+    \Illuminate\Session\Middleware\StartSession::class,
+    \Combindma\FacebookPixel\MetaPixelMiddleware::class,
+    ...
+];
 ``` 
 
 ## Usage - Meta Pixel
@@ -115,21 +97,14 @@ Insert head view after opening head tag, and body view after opening body tag
 <!DOCTYPE html>
 <html>
 <head>
-    <x-metapixel-head/>
+    @include('facebookpixel::head')
 </head>
 <body>
-    <x-metapixel-body/>
+    @include('facebookpixel::body')
 </body>
 ```
 
-If you use UUID as user id you should add userIdAsString attribute to the head component:
-```html
-<head>
-    <x-metapixel-head :userIdAsString="true"/>
-</head>
-```
-
-To add an event, use the `track()` function.
+Your events will also be rendered here. To add an event, use the `track()` function.
 
 ```php
 // CheckoutController.php
@@ -147,7 +122,7 @@ This renders:
 ```html
 <html>
   <head>
-    <script>/* Meta pixel's base script */</script>
+    <script>/* Facebook Pixel's base script */</script>
     <!-- ... -->
   </head>
   <body>
@@ -160,11 +135,7 @@ You can also specify a unique event ID for any of your events so that, if you pl
 
 ```php
 //For example your order id
-MetaPixel::track('Purchase', ['currency' => 'USD', 'value' => 30.00], '123456');
-
-//Or create a unique id using
-$eventId = uniqid('ViewContent_', true);
-MetaPixel::track('ViewContent', [], $eventId);
+FacebookPixel::track('Purchase', ['currency' => 'USD', 'value' => 30.00], '123456');
 ```
 
 
@@ -194,7 +165,7 @@ After a form submit, the following event will be parsed on the contact page:
 ```html
 <html>
 <head>
-    <script>/* Meta pixel's base script */</script>
+    <script>/* Facebook Pixel's base script */</script>
     <!-- ... -->
 </head>
 <body>
@@ -257,7 +228,7 @@ This renders:
 ```html
 <html>
   <head>
-    <script>/* Meta Pixel's base script */</script>
+    <script>/* Facebook Pixel's base script */</script>
     <!-- ... -->
   </head>
   <body>
@@ -273,13 +244,12 @@ This renders:
 ### Advanced matching
 
 This package provides by default advanced matching. We retrieve the email and the user id from authenticated user and include it in the Pixel base code fbq('init') function call as a third parameter.
-You can disable it by adding META_PIXEL_ADVANCED_MATCHING_ENABLED=false in your .env file
 
 ```html
 <html>
 <head>
     <script>
-        /* Meta pixel's base script */
+        /* Facebook Pixel's base script */
         <!-- ... -->
         fbq('init', '{PixelID}', {
             em: 'email@email.com', //Email provided with Auth::user()->email
@@ -295,7 +265,7 @@ You can disable it by adding META_PIXEL_ADVANCED_MATCHING_ENABLED=false in your 
 
 ### Macroable
 
-Adding events to pages can become a repetitive process. Since this package isn't supposed to be opinionated on what your events should look like, the MetaPixel is macroable.
+Adding events to pages can become a repetitive process. Since this package isn't supposed to be opinionated on what your events should look like, the FacebookPixel is macroable.
 
 ```php
 use Combindma\FacebookPixel\Facades\MetaPixel;
@@ -352,7 +322,7 @@ If you don't specify the $user_data parameter, by default we retrieve the email 
 We use the user id as a same external_id in Meta Pixel and conversions API
 
 ```php
-MetaPixel::send('Purchase', $eventId, $custom_data);
+FacebookPixel::send('Purchase', $eventId, $custom_data);
 ```
 
 If you want to test server events, you need to specify the FACEBOOK_TEST_EVENT_CODE in your .env file. By default, this test code will be sent in all API request. 

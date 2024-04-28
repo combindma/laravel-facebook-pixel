@@ -3,10 +3,13 @@
 namespace Combindma\FacebookPixel\Tests;
 
 use Combindma\FacebookPixel\FacebookPixelServiceProvider;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
+    use InteractsWithViews;
+
     protected function getPackageProviders($app): array
     {
         return [
@@ -14,10 +17,11 @@ class TestCase extends Orchestra
         ];
     }
 
-    public function getEnvironmentSetUp($app)
+    public function getEnvironmentSetUp($app): void
     {
-        $app['config']->set('facebook-pixel.facebook_pixel_id', 'facebook_pixel_id');
-        $app['config']->set('facebook-pixel.sessionKey', 'sessionKey');
-        $app['config']->set('facebook-pixel.enabled', true);
+        $app['config']->set('meta-pixel.pixel_id', 'pixel_id');
+        $app['config']->set('meta-pixel.session_key', 'session_key');
+        $app['config']->set('meta-pixel.enabled', true);
+        $app['config']->set('meta-pixel.advanced_matching_enabled', true);
     }
 }

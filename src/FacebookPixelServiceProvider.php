@@ -2,7 +2,8 @@
 
 namespace Combindma\FacebookPixel;
 
-use Illuminate\Support\Facades\View;
+use Combindma\FacebookPixel\Components\Body;
+use Combindma\FacebookPixel\Components\Head;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -11,28 +12,24 @@ class FacebookPixelServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('facebook-pixel')
-            ->hasConfigFile('facebook-pixel');
+            ->name('meta-pixel')
+            ->hasConfigFile('meta-pixel')
+            ->hasViewComponents(
+                'metapixel',
+                Head::class,
+                Body::class
+            )
+            ->hasViews();
     }
 
-    public function packageBooted()
+    public function packageBooted(): void
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'facebookpixel');
-
-        $this->publishes([
-            __DIR__.'/../resources/views' => base_path('resources/views/vendor/combindma'),
-        ], 'views');
-
-        View::creator(
-            ['facebookpixel::head', 'facebookpixel::body'],
-            'Combindma\FacebookPixel\ScriptViewCreator'
-        );
     }
 
-    public function registeringPackage()
+    public function registeringPackage(): void
     {
-        $this->app->singleton(FacebookPixel::class, function () {
-            return new FacebookPixel();
+        $this->app->singleton(MetaPixel::class, function () {
+            return new MetaPixel();
         });
     }
 }

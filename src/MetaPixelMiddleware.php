@@ -5,13 +5,13 @@ namespace Combindma\FacebookPixel;
 use Closure;
 use Illuminate\Session\Store as Session;
 
-class FacebookPixelMiddleware
+class MetaPixelMiddleware
 {
-    protected FacebookPixel $facebookPixel;
+    protected MetaPixel $facebookPixel;
 
     protected Session $session;
 
-    public function __construct(FacebookPixel $facebookPixel, Session $session)
+    public function __construct(MetaPixel $facebookPixel, Session $session)
     {
         $this->facebookPixel = $facebookPixel;
         $this->session = $session;

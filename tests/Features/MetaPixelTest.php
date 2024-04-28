@@ -1,47 +1,43 @@
 <?php
 
 use Combindma\FacebookPixel\EventLayer;
-use Combindma\FacebookPixel\FacebookPixel;
 use Combindma\FacebookPixel\Tests\Models\User;
 use FacebookAds\Object\ServerSide\CustomData;
 use FacebookAds\Object\ServerSide\UserData;
 use Illuminate\Support\Facades\Auth;
 
-beforeEach(function () {
-    $this->facebookPixel = new FacebookPixel();
-});
-
 it('can test if config file are set', function () {
-    $this->assertEquals('facebook_pixel_id', $this->facebookPixel->pixelId());
-    $this->assertEquals('sessionKey', $this->facebookPixel->sessionKey());
-    $this->assertTrue($this->facebookPixel->isEnabled());
+    $this->assertEquals('pixel_id', $this->metaPixel->pixelId());
+    $this->assertEquals('session_key', $this->metaPixel->sessionKey());
+    $this->assertTrue($this->metaPixel->isEnabled());
+    $this->assertTrue($this->metaPixel->isAdvancedMatchingEnabled());
 });
 
 it('can set and retrieve pixel id', function () {
-    $this->facebookPixel->setPixelId(123456);
-    expect($this->facebookPixel->pixelId())->toBe('123456');
+    $this->metaPixel->setPixelId(123456);
+    expect($this->metaPixel->pixelId())->toBe('123456');
 });
 
 it('can retrieve session key', function () {
-    $sessionKey = config('facebook-pixel.sessionKey');
-    expect($this->facebookPixel->sessionKey())->toBe($sessionKey);
+    $sessionKey = config('meta-pixel.session_key');
+    expect($this->metaPixel->sessionKey())->toBe($sessionKey);
 });
 
 it('can retrieve token', function () {
-    $token = config('facebook-pixel.token');
-    expect($this->facebookPixel->token())->toBe($token);
+    $token = config('meta-pixel.token');
+    expect($this->metaPixel->token())->toBe($token);
 });
 
 it('can enable and disable pixel on the fly', function () {
-    $this->facebookPixel->enable();
-    expect($this->facebookPixel->isEnabled())->toBeTrue();
-    $this->facebookPixel->disable();
-    expect($this->facebookPixel->isEnabled())->toBeFalse();
+    $this->metaPixel->enable();
+    expect($this->metaPixel->isEnabled())->toBeTrue();
+    $this->metaPixel->disable();
+    expect($this->metaPixel->isEnabled())->toBeFalse();
 });
 
 it('can track events', function () {
-    $this->facebookPixel->track('TestEvent', ['param1' => 'value1']);
-    $eventLayer = $this->facebookPixel->getEventLayer();
+    $this->metaPixel->track('TestEvent', ['param1' => 'value1']);
+    $eventLayer = $this->metaPixel->getEventLayer();
     expect($eventLayer)->toBeInstanceOf(EventLayer::class)
         ->and($eventLayer->toArray())->toHaveKey('TestEvent')
         ->and($eventLayer->toArray())->toBe([
@@ -53,8 +49,8 @@ it('can track events', function () {
 });
 
 it('can track events with event id', function () {
-    $this->facebookPixel->track('TestEvent', ['param1' => 'value1'], 'event-id');
-    $eventLayer = $this->facebookPixel->getEventLayer();
+    $this->metaPixel->track('TestEvent', ['param1' => 'value1'], 'event-id');
+    $eventLayer = $this->metaPixel->getEventLayer();
     expect($eventLayer)->toBeInstanceOf(EventLayer::class)
         ->and($eventLayer->toArray())->toHaveKey('TestEvent')
         ->and($eventLayer->toArray())->toBe([
@@ -66,8 +62,8 @@ it('can track events with event id', function () {
 });
 
 it('can track custom events', function () {
-    $this->facebookPixel->trackCustom('CustomEvent', ['customParam' => 'customValue']);
-    $customEventLayer = $this->facebookPixel->getCustomEventLayer();
+    $this->metaPixel->trackCustom('CustomEvent', ['customParam' => 'customValue']);
+    $customEventLayer = $this->metaPixel->getCustomEventLayer();
     expect($customEventLayer)->toBeInstanceOf(EventLayer::class)
         ->and($customEventLayer->toArray())->toHaveKey('CustomEvent')
         ->and($customEventLayer->toArray())->toBe([
@@ -79,8 +75,8 @@ it('can track custom events', function () {
 });
 
 it('can track custom events with event id', function () {
-    $this->facebookPixel->trackCustom('CustomEvent', ['customParam' => 'customValue'], 'event-id');
-    $customEventLayer = $this->facebookPixel->getCustomEventLayer();
+    $this->metaPixel->trackCustom('CustomEvent', ['customParam' => 'customValue'], 'event-id');
+    $customEventLayer = $this->metaPixel->getCustomEventLayer();
     expect($customEventLayer)->toBeInstanceOf(EventLayer::class)
         ->and($customEventLayer->toArray())->toHaveKey('CustomEvent')
         ->and($customEventLayer->toArray())->toBe([
@@ -92,8 +88,8 @@ it('can track custom events with event id', function () {
 });
 
 it('can flash events for the next request', function () {
-    $this->facebookPixel->flashEvent('FlashEvent', ['flashParam' => 'flashValue']);
-    $flashedEvent = $this->facebookPixel->getFlashedEvent();
+    $this->metaPixel->flashEvent('FlashEvent', ['flashParam' => 'flashValue']);
+    $flashedEvent = $this->metaPixel->getFlashedEvent();
     expect($flashedEvent)->toHaveKey('FlashEvent')
         ->and($flashedEvent)->toBe([
             'FlashEvent' => [
@@ -104,8 +100,8 @@ it('can flash events for the next request', function () {
 });
 
 it('can flash events for the next request with event id', function () {
-    $this->facebookPixel->flashEvent('FlashEvent', ['flashParam' => 'flashValue'], 'event-id');
-    $flashedEvent = $this->facebookPixel->getFlashedEvent();
+    $this->metaPixel->flashEvent('FlashEvent', ['flashParam' => 'flashValue'], 'event-id');
+    $flashedEvent = $this->metaPixel->getFlashedEvent();
     expect($flashedEvent)->toHaveKey('FlashEvent')
         ->and($flashedEvent)->toBe([
             'FlashEvent' => [
@@ -117,15 +113,15 @@ it('can flash events for the next request with event id', function () {
 
 it('can merge event session data', function () {
     $eventSession = ['MergedEvent' => ['mergedParam' => 'mergedValue']];
-    $this->facebookPixel->merge($eventSession);
-    $eventLayer = $this->facebookPixel->getEventLayer();
+    $this->metaPixel->merge($eventSession);
+    $eventLayer = $this->metaPixel->getEventLayer();
     expect($eventLayer->toArray())->toHaveKey('MergedEvent');
 });
 
 it('can clear the event layer', function () {
-    $this->facebookPixel->track('TestEvent', ['param1' => 'value1']);
-    $this->facebookPixel->clear();
-    $eventLayer = $this->facebookPixel->getEventLayer();
+    $this->metaPixel->track('TestEvent', ['param1' => 'value1']);
+    $this->metaPixel->clear();
+    $eventLayer = $this->metaPixel->getEventLayer();
     expect($eventLayer->toArray())->toBeEmpty();
 });
 
@@ -139,7 +135,7 @@ it('can retrieve user data for advanced matching', function () {
         ->twice()
         ->andReturn($user);
 
-    expect($this->facebookPixel->getUser())->toBe([
+    expect($this->metaPixel->getUser())->toBe([
         'em' => 'test@example.com',
         'external_id' => 12345,
     ]);
@@ -150,18 +146,18 @@ it('returns null when no user is authenticated for getUser', function () {
         ->once()
         ->andReturn(false);
 
-    expect($this->facebookPixel->getUser())->toBeNull();
+    expect($this->metaPixel->getUser())->toBeNull();
 });
 
 it('send method returns null when pixel is disabled', function () {
-    $this->facebookPixel->disable();
+    $this->metaPixel->disable();
 
     $eventName = 'TestEvent';
     $eventId = 'EVENT_ID';
     $userData = new UserData();
     $customData = new CustomData();
 
-    expect($this->facebookPixel->send($eventName, $eventId, $customData, $userData))->toBeNull();
+    expect($this->metaPixel->send($eventName, $eventId, $customData, $userData))->toBeNull();
 });
 
 it('throws an exception when token is not set', function () {
@@ -173,5 +169,5 @@ it('throws an exception when token is not set', function () {
     $customData = new CustomData();
 
     // Expect an Exception with a specific message
-    expect(fn () => $this->facebookPixel->send($eventName, $eventId, $customData))->toThrow(Exception::class);
+    expect(fn () => $this->metaPixel->send($eventName, $eventId, $customData))->toThrow(Exception::class);
 });
