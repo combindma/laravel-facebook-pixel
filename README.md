@@ -7,6 +7,13 @@
 
 A Complete Meta pixel implementation for your Laravel application.
 
+## About Combind Agency
+
+[Combine Agency](https://combind.ma?utm_source=github&utm_medium=banner&utm_campaign=package_name) is a leading web development agency specializing in building innovative and high-performance web applications using modern technologies. Our experienced team of developers, designers, and project managers is dedicated to providing top-notch services tailored to the unique needs of our clients.
+
+If you need assistance with your next project or would like to discuss a custom solution, please feel free to [contact us](mailto:hello@combind.ma) or visit our [website](https://combind.ma?utm_source=github&utm_medium=banner&utm_campaign=package_name) for more information about our services. Let's build something amazing together!
+
+
 ## Introduction
 
 This package provides a smooth integration of Meta Pixel, along with a straightforward implementation of the latest Conversions API, enhancing your overall experience.
