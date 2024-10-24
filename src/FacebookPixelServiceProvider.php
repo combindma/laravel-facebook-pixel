@@ -28,7 +28,7 @@ class FacebookPixelServiceProvider extends PackageServiceProvider
 
     public function registeringPackage(): void
     {
-        $this->app->bind(MetaPixel::class, function () {
+        $this->app->singleton(MetaPixel::class, function () {
             return new MetaPixel();
         });
     }
