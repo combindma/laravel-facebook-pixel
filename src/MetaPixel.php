@@ -50,10 +50,10 @@ class MetaPixel
         $this->token = config('meta-pixel.token');
         $this->sessionKey = config('meta-pixel.session_key');
         $this->testEventCode = config('meta-pixel.test_event_code');
-        $this->eventLayer = new EventLayer();
-        $this->customEventLayer = new EventLayer();
-        $this->flashEventLayer = new EventLayer();
-        $this->userData = new UserData();
+        $this->eventLayer = new EventLayer;
+        $this->customEventLayer = new EventLayer;
+        $this->flashEventLayer = new EventLayer;
+        $this->userData = new UserData;
     }
 
     public function pixelId(): string
@@ -157,9 +157,9 @@ class MetaPixel
         }
 
         $api = Api::init(null, null, $this->token);
-        $api->setLogger(new CurlLogger());
+        $api->setLogger(new CurlLogger);
 
-        $event = (new Event())
+        $event = (new Event)
             ->setEventName($eventName)
             ->setEventTime(time())
             ->setEventId($eventID)
@@ -233,6 +233,6 @@ class MetaPixel
 
     public function clear(): void
     {
-        $this->eventLayer = new EventLayer();
+        $this->eventLayer = new EventLayer;
     }
 }

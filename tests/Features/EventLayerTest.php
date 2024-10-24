@@ -3,7 +3,7 @@
 use Combindma\FacebookPixel\EventLayer;
 
 beforeEach(function () {
-    $this->eventLayer = new EventLayer();
+    $this->eventLayer = new EventLayer;
 });
 
 test('it can set and retrieve event data', function () {

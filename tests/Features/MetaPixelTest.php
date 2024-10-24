@@ -154,8 +154,8 @@ it('send method returns null when pixel is disabled', function () {
 
     $eventName = 'TestEvent';
     $eventId = 'EVENT_ID';
-    $userData = new UserData();
-    $customData = new CustomData();
+    $userData = new UserData;
+    $customData = new CustomData;
 
     expect($this->metaPixel->send($eventName, $eventId, $customData, $userData))->toBeNull();
 });
@@ -166,7 +166,7 @@ it('throws an exception when token is not set', function () {
 
     $eventName = 'TestEvent';
     $eventId = 'EVENT_ID';
-    $customData = new CustomData();
+    $customData = new CustomData;
 
     // Expect an Exception with a specific message
     expect(fn () => $this->metaPixel->send($eventName, $eventId, $customData))->toThrow(Exception::class);

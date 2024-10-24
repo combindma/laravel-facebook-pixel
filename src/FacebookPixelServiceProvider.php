@@ -22,14 +22,12 @@ class FacebookPixelServiceProvider extends PackageServiceProvider
             ->hasViews();
     }
 
-    public function packageBooted(): void
-    {
-    }
+    public function packageBooted(): void {}
 
     public function registeringPackage(): void
     {
         $this->app->singleton(MetaPixel::class, function () {
-            return new MetaPixel();
+            return new MetaPixel;
         });
     }
 }
