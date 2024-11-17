@@ -192,6 +192,8 @@ use Combindma\FacebookPixel\Facades\MetaPixel;
 $id = MetaPixel::pixelId();
 // Set Pixel id on the fly
 MetaPixel::setPixelId('XXXXXXXX');
+// Set Pixel token on the fly
+MetaPixel::setToken('XXXXXXXX');
 // Check whether script rendering is enabled
 $enabled = MetaPixel::isEnabled(); // true|false
 // Enable and disable script rendering on the fly
