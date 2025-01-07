@@ -28,6 +28,11 @@ return [
     'enabled' => env('META_PIXEL_ENABLED', false),
 
     /*
+     * Enable or disable logging. Useful for debugging.
+     */
+    'logging' => env('META_PIXEL_LOGGING', false),
+
+    /*
      * This is used to test server events
      */
     'test_event_code' => env('META_TEST_EVENT_CODE'),

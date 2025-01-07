@@ -89,6 +89,11 @@ return [
      * Enable or disable script rendering. Useful for local development.
      */
     'enabled' => env('META_PIXEL_ENABLED', false),
+    
+    /*
+     * Enable or disable logging. Useful for debugging.
+     */
+    'logging' => env('META_PIXEL_LOGGING', false),
 
     /*
      * This is used to test server events
