@@ -101,6 +101,11 @@ class MetaPixel
         $this->pixelId = (string) $id;
     }
 
+    public function setToken(string $token): void
+    {
+        $this->token = (string) $token;
+    }
+
     /**
      * Add event to the event layer.
      */
