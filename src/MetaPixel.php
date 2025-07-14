@@ -111,7 +111,7 @@ class MetaPixel
 
     public function setTestEventCode(string $code): void
     {
-        $this->token = (string) $code;
+        $this->testEventCode = (string) $code;
     }
 
     /**
