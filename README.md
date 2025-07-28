@@ -235,6 +235,8 @@ $id = MetaPixel::pixelId();
 MetaPixel::setPixelId('XXXXXXXX');
 // Set Pixel token on the fly
 MetaPixel::setToken('XXXXXXXX');
+// Set Pixel testEventCode on the fly
+MetaPixel::setTestEventCode('XXXXXXXX');
 // Check whether script rendering is enabled
 $enabled = MetaPixel::isEnabled(); // true|false
 // Enable and disable script rendering on the fly

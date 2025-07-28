@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static pixelId()
  * @method static setPixelId(int|string $id)
  * @method static setToken(string $token)
+ * @method static setTestEventCode(string $code)
  * @method static enable()
  * @method static disable()
  * @method static clear()
