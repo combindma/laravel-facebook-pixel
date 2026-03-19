@@ -17,18 +17,19 @@
     ],
     "require": {
         "php": "^8.3",
-        "facebook/php-business-sdk": "^22.0",
-        "illuminate/contracts": "^11.0|^12.0",
+        "facebook/php-business-sdk": "^25.0",
+        "illuminate/contracts": "^11.0|^12.0|^13.0",
         "spatie/laravel-package-tools": "^1.11"
     },
     "require-dev": {
-        "laravel/pint": "^1.0",
-        "nunomaduro/collision": "^7.0|^8.0",
         "larastan/larastan": "^3.0",
-        "orchestra/testbench": "^9.0|^10.0",
-        "pestphp/pest": "^3.0",
-        "pestphp/pest-plugin-arch": "^3.0",
-        "pestphp/pest-plugin-laravel": "^3.0",
+        "laravel/boost": "^2.3",
+        "laravel/pint": "^1.0",
+        "nunomaduro/collision": "^7.0|^8.0|^9.0",
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-arch": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0"
@@ -61,7 +62,10 @@
         "laravel": {
             "providers": [
                 "Combindma\\FacebookPixel\\FacebookPixelServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "MetaPixel": "Combindma\\FacebookPixel\\Facades\\MetaPixel"
+            }
         }
     },
     "minimum-stability": "dev",
