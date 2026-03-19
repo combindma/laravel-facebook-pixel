@@ -242,7 +242,7 @@ class MetaPixel
         if ($this->isAdvancedMatchingEnabled() && Auth::check()) {
             return [
                 'em' => strtolower(Auth::user()->email),
-                'external_id' => Auth::user()->id,
+                'external_id' => (string) Auth::user()->id,
             ];
         }
 

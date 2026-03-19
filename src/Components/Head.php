@@ -11,7 +11,7 @@ class Head extends Component
     /**
      * @throws Exception
      */
-    public function __construct(public MetaPixel $metaPixel, public bool $userIdAsString = false)
+    public function __construct(public MetaPixel $metaPixel)
     {
         if ($this->metaPixel->isEnabled() && empty($this->metaPixel->pixelId())) {
             throw new Exception('You need to set a Meta Pixel Id in .env file.');

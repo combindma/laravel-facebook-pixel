@@ -134,13 +134,6 @@ Insert head view after opening head tag, and body view after opening body tag
 </body>
 ```
 
-If you use UUID as user id you should add userIdAsString attribute to the head component:
-```html
-<head>
-    <x-metapixel-head :userIdAsString="true"/>
-</head>
-```
-
 To add an event, use the `track()` function.
 
 ```php

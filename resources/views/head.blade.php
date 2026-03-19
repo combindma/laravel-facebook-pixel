@@ -10,11 +10,7 @@
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
     @if($user = $metaPixel->getUser())
-        @if($userIdAsString)
-            fbq('init', '{{ $metaPixel->pixelId() }}', {em: '{{ $user['em'] }}', external_id: '{{ $user['external_id'] }}'});
-        @else
-            fbq('init', '{{ $metaPixel->pixelId() }}', {em: '{{ $user['em'] }}', external_id: {{ $user['external_id'] }}});
-        @endif
+        fbq('init', '{{ $metaPixel->pixelId() }}', {em: '{{ $user['em'] }}', external_id: '{{ $user['external_id'] }}'});
     @else
         fbq('init', '{{ $metaPixel->pixelId() }}');
     @endif

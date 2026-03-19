@@ -147,7 +147,7 @@ it('can retrieve user data for advanced matching', function () {
 
     expect($this->metaPixel->getUser())->toBe([
         'em' => 'test@example.com',
-        'external_id' => 12345,
+        'external_id' => '12345',
     ]);
 });
 
