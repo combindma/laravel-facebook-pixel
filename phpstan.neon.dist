@@ -2,15 +2,9 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    level: 4
+    level: 5
     paths:
         - src
         - config
-    ignoreErrors:
-    	-
-    		message: '#Access to an undefined property Illuminate\\Foundation\\Auth\\User::\$email#'
+        - database
     tmpDir: build/phpstan
-    checkOctaneCompatibility: true
-    checkModelProperties: true
-    checkMissingIterableValueType: false
-
