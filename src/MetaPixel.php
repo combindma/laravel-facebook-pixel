@@ -106,12 +106,12 @@ class MetaPixel
 
     public function setToken(string $token): void
     {
-        $this->token = (string) $token;
+        $this->token = $token;
     }
 
     public function setTestEventCode(string $code): void
     {
-        $this->testEventCode = (string) $code;
+        $this->testEventCode = $code;
     }
 
     /**

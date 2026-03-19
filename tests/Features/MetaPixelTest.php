@@ -23,9 +23,9 @@ it('can set and retrieve pixel token', function () {
     expect($this->metaPixel->token())->toBe('123456ABCDEF');
 });
 
-it('can set and retrieve pixel testEventCode', function () {
+it('can set and check if pixel test enabled', function () {
     $this->metaPixel->setTestEventCode('TEST12345');
-    expect($this->metaPixel->testEnabled())->toBe('TEST12345');
+    expect($this->metaPixel->testEnabled())->toBe(true);
 });
 
 it('can retrieve session key', function () {
