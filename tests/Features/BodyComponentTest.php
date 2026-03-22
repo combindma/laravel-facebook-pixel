@@ -5,6 +5,7 @@ use Combindma\FacebookPixel\MetaPixel;
 it('renders tracked and custom events in the body view', function () {
     $metaPixel = new MetaPixel;
     $metaPixel->track('Purchase', ['currency' => 'USD', 'value' => 30], 'purchase-1');
+    $metaPixel->track('Purchase', ['currency' => 'USD', 'value' => 40], 'purchase-2');
     $metaPixel->trackCustom('LeadCaptured', ['source' => 'footer']);
 
     $html = view('meta-pixel::body', [
@@ -16,6 +17,7 @@ it('renders tracked and custom events in the body view', function () {
     expect($html)
         ->toContain("fbq('track', 'Purchase'")
         ->toContain("eventID: 'purchase-1'")
+        ->toContain("eventID: 'purchase-2'")
         ->toContain("fbq('trackCustom', 'LeadCaptured'");
 });
 

@@ -51,9 +51,9 @@ it('can track events', function () {
     $this->metaPixel->track('TestEvent', ['param1' => 'value1']);
     $eventLayer = $this->metaPixel->getEventLayer();
     expect($eventLayer)->toBeInstanceOf(EventLayer::class)
-        ->and($eventLayer->toArray())->toHaveKey('TestEvent')
         ->and($eventLayer->toArray())->toBe([
-            'TestEvent' => [
+            [
+                'event_name' => 'TestEvent',
                 'data' => ['param1' => 'value1'],
                 'event_id' => null,
             ],
@@ -64,9 +64,9 @@ it('can track events with event id', function () {
     $this->metaPixel->track('TestEvent', ['param1' => 'value1'], 'event-id');
     $eventLayer = $this->metaPixel->getEventLayer();
     expect($eventLayer)->toBeInstanceOf(EventLayer::class)
-        ->and($eventLayer->toArray())->toHaveKey('TestEvent')
         ->and($eventLayer->toArray())->toBe([
-            'TestEvent' => [
+            [
+                'event_name' => 'TestEvent',
                 'data' => ['param1' => 'value1'],
                 'event_id' => 'event-id',
             ],
@@ -77,9 +77,9 @@ it('can track custom events', function () {
     $this->metaPixel->trackCustom('CustomEvent', ['customParam' => 'customValue']);
     $customEventLayer = $this->metaPixel->getCustomEventLayer();
     expect($customEventLayer)->toBeInstanceOf(EventLayer::class)
-        ->and($customEventLayer->toArray())->toHaveKey('CustomEvent')
         ->and($customEventLayer->toArray())->toBe([
-            'CustomEvent' => [
+            [
+                'event_name' => 'CustomEvent',
                 'data' => ['customParam' => 'customValue'],
                 'event_id' => null,
             ],
@@ -90,9 +90,9 @@ it('can track custom events with event id', function () {
     $this->metaPixel->trackCustom('CustomEvent', ['customParam' => 'customValue'], 'event-id');
     $customEventLayer = $this->metaPixel->getCustomEventLayer();
     expect($customEventLayer)->toBeInstanceOf(EventLayer::class)
-        ->and($customEventLayer->toArray())->toHaveKey('CustomEvent')
         ->and($customEventLayer->toArray())->toBe([
-            'CustomEvent' => [
+            [
+                'event_name' => 'CustomEvent',
                 'data' => ['customParam' => 'customValue'],
                 'event_id' => 'event-id',
             ],
@@ -102,32 +102,50 @@ it('can track custom events with event id', function () {
 it('can flash events for the next request', function () {
     $this->metaPixel->flashEvent('FlashEvent', ['flashParam' => 'flashValue']);
     $flashedEvent = $this->metaPixel->getFlashedEvent();
-    expect($flashedEvent)->toHaveKey('FlashEvent')
-        ->and($flashedEvent)->toBe([
-            'FlashEvent' => [
-                'data' => ['flashParam' => 'flashValue'],
-                'event_id' => null,
-            ],
-        ]);
+    expect($flashedEvent)->toBe([
+        [
+            'event_name' => 'FlashEvent',
+            'data' => ['flashParam' => 'flashValue'],
+            'event_id' => null,
+        ],
+    ]);
 });
 
 it('can flash events for the next request with event id', function () {
     $this->metaPixel->flashEvent('FlashEvent', ['flashParam' => 'flashValue'], 'event-id');
     $flashedEvent = $this->metaPixel->getFlashedEvent();
-    expect($flashedEvent)->toHaveKey('FlashEvent')
-        ->and($flashedEvent)->toBe([
-            'FlashEvent' => [
-                'data' => ['flashParam' => 'flashValue'],
-                'event_id' => 'event-id',
-            ],
-        ]);
+    expect($flashedEvent)->toBe([
+        [
+            'event_name' => 'FlashEvent',
+            'data' => ['flashParam' => 'flashValue'],
+            'event_id' => 'event-id',
+        ],
+    ]);
 });
 
 it('can merge event session data', function () {
-    $eventSession = ['MergedEvent' => ['mergedParam' => 'mergedValue']];
+    $eventSession = [['event_name' => 'MergedEvent', 'data' => ['mergedParam' => 'mergedValue'], 'event_id' => null]];
     $this->metaPixel->merge($eventSession);
     $eventLayer = $this->metaPixel->getEventLayer();
-    expect($eventLayer->toArray())->toHaveKey('MergedEvent');
+    expect($eventLayer->toArray())->toBe($eventSession);
+});
+
+it('can track multiple events with the same name during the same request', function () {
+    $this->metaPixel->track('Purchase', ['value' => 30], 'purchase-1');
+    $this->metaPixel->track('Purchase', ['value' => 40], 'purchase-2');
+
+    expect($this->metaPixel->getEventLayer()->toArray())->toBe([
+        [
+            'event_name' => 'Purchase',
+            'data' => ['value' => 30],
+            'event_id' => 'purchase-1',
+        ],
+        [
+            'event_name' => 'Purchase',
+            'data' => ['value' => 40],
+            'event_id' => 'purchase-2',
+        ],
+    ]);
 });
 
 it('can clear the event layer', function () {

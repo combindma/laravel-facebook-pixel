@@ -2,13 +2,13 @@
 @unless(empty($eventLayer))
 <!-- Meta Pixel Events -->
 <script>
-@foreach($eventLayer as $eventName => $metaPixel)
-@if(empty($metaPixel['event_id']) && empty($metaPixel['data']))
-    fbq('track', '{{ $eventName }}');
-@elseif(empty($metaPixel['event_id']))
-    fbq('track', '{{ $eventName }}', {{ Js::from($metaPixel['data']) }});
+@foreach($eventLayer as $event)
+@if(empty($event['event_id']) && empty($event['data']))
+    fbq('track', '{{ $event['event_name'] }}');
+@elseif(empty($event['event_id']))
+    fbq('track', '{{ $event['event_name'] }}', {{ Js::from($event['data']) }});
 @else
-    fbq('track', '{{ $eventName }}', {{ Js::from($metaPixel['data']) }}, {eventID: '{{ $metaPixel['event_id'] }}'});
+    fbq('track', '{{ $event['event_name'] }}', {{ Js::from($event['data']) }}, {eventID: '{{ $event['event_id'] }}'});
 @endif
 @endforeach
 </script>
@@ -17,13 +17,13 @@
 @unless(empty($customEventLayer))
 <!-- Meta Pixel Custom Events -->
 <script>
-@foreach($customEventLayer as $customEventName => $metaPixel)
-@if(empty($metaPixel['event_id']) && empty($metaPixel['data']))
-   fbq('trackCustom', '{{ $customEventName }}');
-@elseif(empty($metaPixel['event_id']))
-    fbq('trackCustom', '{{ $customEventName }}', {{ Js::from($metaPixel['data']) }});
+@foreach($customEventLayer as $event)
+@if(empty($event['event_id']) && empty($event['data']))
+   fbq('trackCustom', '{{ $event['event_name'] }}');
+@elseif(empty($event['event_id']))
+    fbq('trackCustom', '{{ $event['event_name'] }}', {{ Js::from($event['data']) }});
 @else
-   fbq('trackCustom', '{{ $customEventName }}', {{ Js::from($metaPixel['data']) }}, {eventID: '{{ $metaPixel['event_id'] }}'});
+   fbq('trackCustom', '{{ $event['event_name'] }}', {{ Js::from($event['data']) }}, {eventID: '{{ $event['event_id'] }}'});
 @endif
 @endforeach
 </script>

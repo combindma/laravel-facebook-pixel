@@ -195,7 +195,12 @@ $eventId = uniqid('ViewContent_', true);
 MetaPixel::track('ViewContent', [], $eventId);
 ```
 
-Calling `track()` multiple times with the same event name during the same request keeps the first payload for that event.
+Calling `track()` multiple times with the same event name during the same request now preserves every event in the order it was added.
+
+```php
+MetaPixel::track('AddToCart', ['value' => 30.00], 'cart-line-1');
+MetaPixel::track('AddToCart', ['value' => 45.00], 'cart-line-2');
+```
 
 #### Flashing data for the next request
 
@@ -272,7 +277,7 @@ MetaPixel::flashEvent('eventName'); //without properties
 MetaPixel::clear();
 ```
 
-Calling `flashEvent()` multiple times with the same event name during the same request keeps the first payload for that event.
+Calling `flashEvent()` multiple times with the same event name during the same request also preserves every event in the order it was added.
 
 ### Custom Events
 
