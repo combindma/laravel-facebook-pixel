@@ -1,6 +1,7 @@
 <?php
 
 use Combindma\FacebookPixel\EventLayer;
+use Combindma\FacebookPixel\MetaPixel;
 use Combindma\FacebookPixel\Tests\Models\User;
 use FacebookAds\Object\ServerSide\CustomData;
 use FacebookAds\Object\ServerSide\UserData;
@@ -137,18 +138,27 @@ it('can clear the event layer', function () {
 
 it('can retrieve user data for advanced matching', function () {
     $user = new User(['id' => 12345, 'email' => 'test@example.com']);
-    // Mock the Auth facade to return the user
+
     Auth::shouldReceive('check')
         ->once()
         ->andReturn(true);
     Auth::shouldReceive('user')
-        ->twice()
+        ->once()
         ->andReturn($user);
 
     expect($this->metaPixel->getUser())->toBe([
         'em' => 'test@example.com',
         'external_id' => '12345',
     ]);
+});
+
+it('returns null when advanced matching is disabled', function () {
+    config()->set('meta-pixel.advanced_matching_enabled', false);
+    $this->metaPixel = new MetaPixel;
+
+    Auth::shouldReceive('check')->never();
+
+    expect($this->metaPixel->getUser())->toBeNull();
 });
 
 it('returns null when no user is authenticated for getUser', function () {
@@ -171,13 +181,11 @@ it('send method returns null when pixel is disabled', function () {
 });
 
 it('throws an exception when token is not set', function () {
-    // Mock the configuration to return an empty token
-    config()->set('facebook-pixel.token', '');
+    $this->metaPixel->setToken('');
 
     $eventName = 'TestEvent';
     $eventId = 'EVENT_ID';
     $customData = new CustomData;
 
-    // Expect an Exception with a specific message
     expect(fn () => $this->metaPixel->send($eventName, $eventId, $customData))->toThrow(Exception::class);
 });

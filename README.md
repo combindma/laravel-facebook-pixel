@@ -1,18 +1,40 @@
 # Meta Pixel integration for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/combindma/laravel-facebook-pixel.svg?style=flat-square)](https://packagist.org/packages/combindma/laravel-facebook-pixel)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/combindma/laravel-facebook-pixel/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/combindma/laravel-facebook-pixel/actions?query=workflow%3ATests+branch%3Amaster)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/combindma/laravel-facebook-pixel/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/combindma/laravel-facebook-pixel/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/combindma/laravel-facebook-pixel/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/combindma/laravel-facebook-pixel/actions?query=workflow%3ATests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/combindma/laravel-facebook-pixel/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/combindma/laravel-facebook-pixel/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/combindma/laravel-facebook-pixel.svg?style=flat-square)](https://packagist.org/packages/combindma/laravel-facebook-pixel)
 
 A Complete Meta pixel implementation for your Laravel application.
+
+## Table of Contents
+
+- [About Combind Agency](#about-combind-agency)
+- [Introduction](#introduction)
+- [Upgrading to Version 5](#upgrading-to-version-5)
+- [Pre-requisites](#pre-requisites)
+  - [Register a Meta Pixel](#register-a-meta-pixel)
+  - [Conversions API](#conversions-api)
+- [Installation](#installation)
+- [Usage - Meta Pixel](#usage---meta-pixel)
+  - [Include scripts in Blade](#include-scripts-in-blade)
+  - [Flashing data for the next request](#flashing-data-for-the-next-request)
+  - [Available Methods](#available-methods)
+  - [Custom Events](#custom-events)
+  - [Advanced matching](#advanced-matching)
+  - [Macroable](#macroable)
+- [Usage - Conversions API](#usage---conversions-api)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [Security Vulnerabilities](#security-vulnerabilities)
+- [Credits](#credits)
+- [License](#license)
 
 ## About Combind Agency
 
 [Combine Agency](https://combind.ma?utm_source=github&utm_medium=banner&utm_campaign=package_name) is a leading web development agency specializing in building innovative and high-performance web applications using modern technologies. Our experienced team of developers, designers, and project managers is dedicated to providing top-notch services tailored to the unique needs of our clients.
 
 If you need assistance with your next project or would like to discuss a custom solution, please feel free to [contact us](mailto:hello@combind.ma) or visit our [website](https://combind.ma?utm_source=github&utm_medium=banner&utm_campaign=package_name) for more information about our services. Let's build something amazing together!
-
 
 ## Introduction
 
@@ -172,6 +194,7 @@ $eventId = uniqid('ViewContent_', true);
 MetaPixel::track('ViewContent', [], $eventId);
 ```
 
+Calling `track()` multiple times with the same event name during the same request keeps the first payload for that event.
 
 #### Flashing data for the next request
 
@@ -208,7 +231,7 @@ After a form submit, the following event will be parsed on the contact page:
         'track', 'Lead', {
             'content_name': 'Auto Insurance',
             'content_category': 'Quote',
-            'value': 40.00,
+            'value': 400.00,
             'currency': 'USD'
         }
     );
@@ -235,18 +258,20 @@ $enabled = MetaPixel::isEnabled(); // true|false
 // Enable and disable script rendering on the fly
 MetaPixel::enable();
 MetaPixel::disable();
-// Add event to the event layer (automatically renders right before the pixel script). Setting new values merges them with the previous ones.
+// Add event to the event layer (automatically renders right before the pixel script).
 MetaPixel::track('eventName', ['attribute' => 'value']);
 MetaPixel::track('eventName', ['attribute' => 'value'], 'event_id'); //with an event id
 MetaPixel::track('eventName'); //without properties 
 MetaPixel::track('eventName', [], 'event_id'); //with an event id but without properties
-// Flash event for the next request. Setting new values merges them with the previous ones.
+// Flash event for the next request.
 MetaPixel::flashEvent('eventName', ['attribute' => 'value']);
 MetaPixel::flashEvent('eventName', ['attribute' => 'value'], 'event_id'); //with an event id
 MetaPixel::flashEvent('eventName'); //without properties
 //Clear the event layer.
 MetaPixel::clear();
 ```
+
+Calling `flashEvent()` multiple times with the same event name during the same request keeps the first payload for that event.
 
 ### Custom Events
 
@@ -281,8 +306,8 @@ This renders:
 
 ### Advanced matching
 
-This package provides by default advanced matching. We retrieve the email and the user id from authenticated user and include it in the Pixel base code fbq('init') function call as a third parameter.
-You can disable it by adding META_PIXEL_ADVANCED_MATCHING_ENABLED=false in your .env file
+This package enables advanced matching by default. It retrieves the authenticated user's email and ID and includes them in the `fbq('init')` call.
+You can disable it by adding `META_PIXEL_ADVANCED_MATCHING_ENABLED=false` to your `.env` file.
 
 ```html
 <html>
@@ -309,7 +334,7 @@ Adding events to pages can become a repetitive process. Since this package isn't
 ```php
 use Combindma\FacebookPixel\Facades\MetaPixel;
 
-//include this in your macrobale file
+// Include this in your macroable file
 MetaPixel::macro('purchase', function ($product) {
     MetaPixel::track('Purchase', [
         'currency' => 'EUR',
@@ -324,9 +349,9 @@ MetaPixel::purchase($product);
 
 ## Usage - Conversions API
 
-If you plan on using [Conversions API](https://developers.facebook.com/docs/marketing-api/conversions-api/get-started) functionalities. Yous should specify the token in your .env file first.
+If you plan on using [Conversions API](https://developers.facebook.com/docs/marketing-api/conversions-api/get-started), you should specify the token in your `.env` file first.
 
-For every request yous should specify a unique event id for handling Pixel Duplicate Events and Conversions API.
+For every request, you should specify a unique event ID to help deduplicate Meta Pixel and Conversions API events.
 
 This is how you can start:
 
@@ -347,7 +372,7 @@ $content = (new Content())
     ->setDeliveryCategory(DeliveryCategory::HOME_DELIVERY);
     
 $custom_data = (new CustomData())
-    ->setContents(array($content))
+    ->setContents([$content])
     ->setCurrency('usd')
     ->setValue(123.45);
     
@@ -357,18 +382,18 @@ $eventId = uniqid('prefix_');
 MetaPixel::send('Purchase', $eventId ,$custom_data, $user_data);
 ```
 
-If you don't specify the $user_data parameter, by default we retrieve the email & the id from Auth::user() if the user is authenticated.
-We use the user id as a same external_id in Meta Pixel and conversions API
+If you don't specify the `$user_data` parameter, the package retrieves the email and ID from `Auth::user()` when the user is authenticated.
+It uses the authenticated user ID as the `external_id` value in both Meta Pixel and Conversions API.
 
 ```php
 MetaPixel::send('Purchase', $eventId, $custom_data);
 ```
 
-If you want to test server events, you need to specify the FACEBOOK_TEST_EVENT_CODE in your .env file. By default, this test code will be sent in all API request. 
+If you want to test server events, you need to specify `META_TEST_EVENT_CODE` in your `.env` file. By default, this test code will be sent in all API requests.
 
-So Don't forget to delete after you finish your server tests.
+Do not forget to remove it after you finish your server-side tests.
 
-You can use the [Playload Helper](https://developers.facebook.com/docs/marketing-api/conversions-api/payload-helper) to learn more about the requests to send.
+You can use the [Payload Helper](https://developers.facebook.com/docs/marketing-api/conversions-api/payload-helper) to learn more about the requests to send.
 
 ## Testing
 
@@ -378,7 +403,7 @@ composer test
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Contributions are welcome. Please open a pull request with tests for any behavior change or bug fix.
 
 ## Security Vulnerabilities
 

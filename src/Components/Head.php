@@ -4,6 +4,9 @@ namespace Combindma\FacebookPixel\Components;
 
 use Combindma\FacebookPixel\MetaPixel;
 use Exception;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\View\Component;
 
 class Head extends Component
@@ -22,7 +25,7 @@ class Head extends Component
         }
     }
 
-    public function render()
+    public function render(): View|Factory|Application
     {
         return view('meta-pixel::head');
     }

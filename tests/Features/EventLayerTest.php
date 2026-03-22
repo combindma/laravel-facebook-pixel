@@ -44,3 +44,15 @@ test('it can clear event data', function () {
 
     expect($this->eventLayer->toArray())->toBeEmpty();
 });
+
+test('it keeps the first event payload when the same event is set twice', function () {
+    $this->eventLayer->set('Purchase', ['value' => 30], 'first-event');
+    $this->eventLayer->set('Purchase', ['value' => 40], 'second-event');
+
+    expect($this->eventLayer->toArray())->toEqual([
+        'Purchase' => [
+            'data' => ['value' => 30],
+            'event_id' => 'first-event',
+        ],
+    ]);
+});

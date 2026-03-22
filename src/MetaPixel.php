@@ -42,8 +42,6 @@ class MetaPixel
 
     private EventLayer $flashEventLayer;
 
-    private UserData $userData;
-
     public function __construct()
     {
         $this->enabled = config('meta-pixel.enabled');
@@ -56,7 +54,6 @@ class MetaPixel
         $this->eventLayer = new EventLayer;
         $this->customEventLayer = new EventLayer;
         $this->flashEventLayer = new EventLayer;
-        $this->userData = new UserData;
     }
 
     public function pixelId(): string
@@ -64,12 +61,12 @@ class MetaPixel
         return (string) $this->pixelId;
     }
 
-    public function sessionKey()
+    public function sessionKey(): string
     {
         return $this->sessionKey;
     }
 
-    public function token()
+    public function token(): ?string
     {
         return $this->token;
     }
@@ -140,21 +137,21 @@ class MetaPixel
 
     public function userData(): UserData
     {
-        if ($user = $this->getUser()) {
-            return $this->userData
-                ->setEmail($user['em'])
-                ->setExternalId($user['external_id'])
-                ->setClientIpAddress(Request::ip())
-                ->setClientUserAgent(Request::userAgent())
-                ->setFbc(Arr::get($_COOKIE, '_fbc'))
-                ->setFbp(Arr::get($_COOKIE, '_fbp'));
-        }
-
-        return $this->userData
+        $userData = (new UserData)
             ->setClientIpAddress(Request::ip())
             ->setClientUserAgent(Request::userAgent())
             ->setFbc(Arr::get($_COOKIE, '_fbc'))
             ->setFbp(Arr::get($_COOKIE, '_fbp'));
+
+        $user = $this->getUser();
+
+        if ($user === null) {
+            return $userData;
+        }
+
+        return $userData
+            ->setEmail($user['em'])
+            ->setExternalId($user['external_id']);
     }
 
     /**
@@ -165,11 +162,12 @@ class MetaPixel
         if (! $this->isEnabled()) {
             return null;
         }
+
         if (empty($this->token())) {
             throw new Exception('You need to set a token in your .env file to use the Conversions API.');
         }
 
-        $api = Api::init(null, null, $this->token);
+        $api = Api::init('', '', $this->token());
 
         if ($this->logEnabled) {
             $api->setLogger(new CurlLogger);
@@ -234,15 +232,22 @@ class MetaPixel
     }
 
     /**
-     * Retrieve the email to use it advanced matching.
-     * To use advanced matching we will get the email if the user is authenticated
+     * @return array{em: string, external_id: string}|null
      */
     public function getUser(): ?array
     {
         if ($this->isAdvancedMatchingEnabled() && Auth::check()) {
+            $user = Auth::user();
+            $email = data_get($user, 'email');
+            $userId = data_get($user, 'id');
+
+            if (! is_string($email) || $email === '' || $userId === null) {
+                return null;
+            }
+
             return [
-                'em' => strtolower(Auth::user()->email),
-                'external_id' => (string) Auth::user()->id,
+                'em' => strtolower($email),
+                'external_id' => (string) $userId,
             ];
         }
 

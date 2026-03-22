@@ -6,16 +6,16 @@ use Illuminate\Support\Arr;
 
 class EventLayer
 {
-    protected array $data;
+    protected array $data = [];
 
-    public function __construct($data = [])
+    public function __construct(array $data = [])
     {
         $this->data = $data;
     }
 
-    public function set(string $eventName, array $parameters = [], ?string $eventID = null): void
+    public function set(string $eventName, array $parameters = [], ?string $eventId = null): void
     {
-        $this->data = Arr::add($this->data, $eventName, ['data' => $parameters, 'event_id' => $eventID]);
+        $this->data = Arr::add($this->data, $eventName, ['data' => $parameters, 'event_id' => $eventId]);
     }
 
     public function merge(array $newData): void
