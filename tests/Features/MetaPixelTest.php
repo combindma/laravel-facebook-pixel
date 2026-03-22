@@ -4,6 +4,7 @@ use Combindma\FacebookPixel\EventLayer;
 use Combindma\FacebookPixel\MetaPixel;
 use Combindma\FacebookPixel\Tests\Models\User;
 use FacebookAds\Object\ServerSide\CustomData;
+use FacebookAds\Object\ServerSide\EventResponse;
 use FacebookAds\Object\ServerSide\UserData;
 use Illuminate\Support\Facades\Auth;
 
@@ -188,4 +189,107 @@ it('throws an exception when token is not set', function () {
     $customData = new CustomData;
 
     expect(fn () => $this->metaPixel->send($eventName, $eventId, $customData))->toThrow(Exception::class);
+});
+
+it('can track and send with the same explicit event id', function () {
+    $customData = new CustomData;
+    $userData = new UserData;
+    $eventResponse = Mockery::mock(EventResponse::class);
+
+    $metaPixel = new class($eventResponse) extends MetaPixel
+    {
+        public array $trackedCalls = [];
+
+        public array $sentCalls = [];
+
+        public function __construct(public ?EventResponse $responseToReturn = null)
+        {
+            parent::__construct();
+        }
+
+        public function track(string $eventName, array $parameters = [], ?string $eventId = null): void
+        {
+            $this->trackedCalls[] = compact('eventName', 'parameters', 'eventId');
+        }
+
+        public function send(string $eventName, string $eventID, CustomData $customData, ?UserData $userData = null): ?EventResponse
+        {
+            $this->sentCalls[] = compact('eventName', 'eventID', 'customData', 'userData');
+
+            return $this->responseToReturn;
+        }
+    };
+
+    expect($metaPixel->trackAndSend(
+        'Purchase',
+        ['currency' => 'USD', 'value' => 30.0],
+        $customData,
+        $userData,
+        'purchase-123',
+    ))->toBe($eventResponse)
+        ->and($metaPixel->trackedCalls)->toBe([
+            [
+                'eventName' => 'Purchase',
+                'parameters' => ['currency' => 'USD', 'value' => 30.0],
+                'eventId' => 'purchase-123',
+            ],
+        ])
+        ->and($metaPixel->sentCalls)->toBe([
+            [
+                'eventName' => 'Purchase',
+                'eventID' => 'purchase-123',
+                'customData' => $customData,
+                'userData' => $userData,
+            ],
+        ]);
+});
+
+it('can track and send with an automatically generated event id', function () {
+    $customData = new CustomData;
+
+    $metaPixel = new class extends MetaPixel
+    {
+        public array $trackedCalls = [];
+
+        public array $sentCalls = [];
+
+        public function __construct()
+        {
+            parent::__construct();
+        }
+
+        public function track(string $eventName, array $parameters = [], ?string $eventId = null): void
+        {
+            $this->trackedCalls[] = compact('eventName', 'parameters', 'eventId');
+        }
+
+        public function send(string $eventName, string $eventID, CustomData $customData, ?UserData $userData = null): ?EventResponse
+        {
+            $this->sentCalls[] = compact('eventName', 'eventID', 'customData', 'userData');
+
+            return null;
+        }
+
+        protected function generateEventId(): string
+        {
+            return 'generated-event-id';
+        }
+    };
+
+    expect($metaPixel->trackAndSend('Purchase', ['currency' => 'USD'], $customData))->toBeNull()
+        ->and($metaPixel->trackedCalls)->toBe([
+            [
+                'eventName' => 'Purchase',
+                'parameters' => ['currency' => 'USD'],
+                'eventId' => 'generated-event-id',
+            ],
+        ])
+        ->and($metaPixel->sentCalls)->toBe([
+            [
+                'eventName' => 'Purchase',
+                'eventID' => 'generated-event-id',
+                'customData' => $customData,
+                'userData' => null,
+            ],
+        ]);
 });

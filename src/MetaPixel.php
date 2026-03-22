@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 
 class MetaPixel
@@ -133,6 +134,23 @@ class MetaPixel
     public function flashEvent(string $eventName, array $parameters = [], ?string $eventId = null): void
     {
         $this->flashEventLayer->set($eventName, $parameters, $eventId);
+    }
+
+    /**
+     * Track a browser event and send the matching Conversions API event with the same event ID.
+     */
+    public function trackAndSend(
+        string $eventName,
+        array $parameters,
+        CustomData $customData,
+        ?UserData $userData = null,
+        ?string $eventId = null,
+    ): ?EventResponse {
+        $resolvedEventId = $eventId ?? $this->generateEventId();
+
+        $this->track($eventName, $parameters, $resolvedEventId);
+
+        return $this->send($eventName, $resolvedEventId, $customData, $userData);
     }
 
     public function userData(): UserData
@@ -257,5 +275,10 @@ class MetaPixel
     public function clear(): void
     {
         $this->eventLayer = new EventLayer;
+    }
+
+    protected function generateEventId(): string
+    {
+        return (string) Str::uuid();
     }
 }

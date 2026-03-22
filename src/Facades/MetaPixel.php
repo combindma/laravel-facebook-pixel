@@ -3,6 +3,7 @@
 namespace Combindma\FacebookPixel\Facades;
 
 use FacebookAds\Object\ServerSide\CustomData;
+use FacebookAds\Object\ServerSide\EventResponse;
 use FacebookAds\Object\ServerSide\UserData;
 use Illuminate\Support\Facades\Facade;
 
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static flashEvent(string $eventName, array $parameters = [], string $eventId = null)
  * @method static userData()
  * @method static send(string $eventName, string $eventId, CustomData $customData, UserData $userData = null)
+ * @method static EventResponse|null trackAndSend(string $eventName, array $parameters, CustomData $customData, UserData $userData = null, string $eventId = null)
  */
 class MetaPixel extends Facade
 {

@@ -24,6 +24,7 @@ A Complete Meta pixel implementation for your Laravel application.
   - [Advanced matching](#advanced-matching)
   - [Macroable](#macroable)
 - [Usage - Conversions API](#usage---conversions-api)
+- [Track and Send Together](#track-and-send-together)
 - [Testing](#testing)
 - [Contributing](#contributing)
 - [Security Vulnerabilities](#security-vulnerabilities)
@@ -387,6 +388,52 @@ It uses the authenticated user ID as the `external_id` value in both Meta Pixel 
 
 ```php
 MetaPixel::send('Purchase', $eventId, $custom_data);
+```
+
+## Track and Send Together
+
+If you want the package to handle deduplication for you, use `trackAndSend()`. It tracks the browser event and sends the Conversions API event using the same event ID.
+
+```php
+use Combindma\FacebookPixel\Facades\MetaPixel;
+use FacebookAds\Object\ServerSide\CustomData;
+
+$customData = (new CustomData())
+    ->setCurrency('usd')
+    ->setValue(123.45);
+
+MetaPixel::trackAndSend(
+    'Purchase',
+    ['currency' => 'USD', 'value' => 123.45],
+    $customData,
+);
+```
+
+If you already have your own event ID, you can still pass it explicitly:
+
+```php
+MetaPixel::trackAndSend(
+    'Purchase',
+    ['currency' => 'USD', 'value' => 123.45],
+    $customData,
+    eventId: 'order-123',
+);
+```
+
+You can also provide custom `UserData` when needed:
+
+```php
+use FacebookAds\Object\ServerSide\UserData;
+
+$userData = (new UserData())
+    ->setEmail('joe@eg.com');
+
+MetaPixel::trackAndSend(
+    'Purchase',
+    ['currency' => 'USD', 'value' => 123.45],
+    $customData,
+    userData: $userData,
+);
 ```
 
 If you want to test server events, you need to specify `META_TEST_EVENT_CODE` in your `.env` file. By default, this test code will be sent in all API requests.
