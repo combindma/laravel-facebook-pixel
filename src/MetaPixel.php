@@ -33,6 +33,8 @@ class MetaPixel
 
     private ?string $token;
 
+    private ?string $appSecret;
+
     private string $sessionKey;
 
     private ?string $testEventCode;
@@ -50,6 +52,7 @@ class MetaPixel
         $this->advancedMatchingEnabled = config('meta-pixel.advanced_matching_enabled');
         $this->pixelId = config('meta-pixel.pixel_id');
         $this->token = config('meta-pixel.token');
+        $this->appSecret = config('meta-pixel.app_secret');
         $this->sessionKey = config('meta-pixel.session_key');
         $this->testEventCode = config('meta-pixel.test_event_code');
         $this->eventLayer = new EventLayer;
@@ -185,7 +188,7 @@ class MetaPixel
             throw new Exception('You need to set a token in your .env file to use the Conversions API.');
         }
 
-        $api = Api::init('', '', $this->token());
+        $api = Api::init(null, $this->appSecret ?? null, $this->token());
 
         if ($this->logEnabled) {
             $api->setLogger(new CurlLogger);

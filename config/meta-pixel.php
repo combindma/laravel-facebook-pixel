@@ -18,6 +18,12 @@ return [
     'token' => env('META_PIXEL_TOKEN', ''),
 
     /*
+     * Your Meta App Secret, required to generate a valid appsecret_proof for the Conversions API.
+     * Found in your Meta App Dashboard under Settings > Basic.
+     */
+    'app_secret' => env('META_PIXEL_APP_SECRET'),
+
+    /*
      * Enable or disable advanced matching. Useful for adjusting user privacy.
      */
     'advanced_matching_enabled' => env('META_PIXEL_ADVANCED_MATCHING_ENABLED', true),

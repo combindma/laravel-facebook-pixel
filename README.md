@@ -62,6 +62,10 @@ To use the Conversions API, you need to generate an access token, which will be 
 
 Refer to [Conversions API Guide](https://developers.facebook.com/docs/marketing-api/conversions-api/get-started) to learn more.
 
+#### Obtain Your App Secret
+Your App Secret is required to generate a valid `appsecret_proof` for every Conversions API request. Facebook uses it to generate an `appsecret_proof` that gets sent with each request for added security, but it's not strictly mandatory for API to work.
+
+You can find it in your **Meta App Dashboard → Settings → Basic → App Secret**.
 
 ## Installation
 
@@ -102,6 +106,12 @@ return [
      * To use the Conversions API, you need an access token. For Documentation please see: https://developers.facebook.com/docs/marketing-api/conversions-api/get-started
      */
     'token' => env('META_PIXEL_TOKEN', ''),
+
+    /*
+     * Your Meta App Secret, required to generate a valid appsecret_proof for the Conversions API.
+     * Found in your Meta App Dashboard under Settings > Basic.
+     */
+    'app_secret' => env('META_PIXEL_APP_SECRET'),
 
     /*
      * Enable or disable advanced matching. Useful for adjusting user privacy.
@@ -355,7 +365,12 @@ MetaPixel::purchase($product);
 
 ## Usage - Conversions API
 
-If you plan on using [Conversions API](https://developers.facebook.com/docs/marketing-api/conversions-api/get-started), you should specify the token in your `.env` file first.
+If you plan on using [Conversions API](https://developers.facebook.com/docs/marketing-api/conversions-api/get-started), you should specify the following in your `.env` file first:
+
+```dotenv
+META_PIXEL_TOKEN=your-access-token
+META_PIXEL_APP_SECRET=your-app-secret
+```
 
 For every request, you should specify a unique event ID to help deduplicate Meta Pixel and Conversions API events.
 
