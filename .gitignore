@@ -16,3 +16,10 @@ node_modules
 .DS_Store
 **/.DS_Store
 *.cache
+.codex
+CLAUDE.md
+AGENTS.md
+.claude
+.agents
+boost.json
+.mcp.json
