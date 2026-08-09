@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @see \Combindma\FacebookPixel\MetaPixel
  *
+ * @mixin \Combindma\FacebookPixel\MetaPixel
+ *
  * @method static pixelId()
  * @method static setPixelId(int|string $id)
  * @method static setToken(string $token)
