@@ -188,7 +188,10 @@ class MetaPixel
             throw new Exception('You need to set a token in your .env file to use the Conversions API.');
         }
 
-        $api = Api::init(null, $this->appSecret ?? null, $this->token());
+        // The Conversions API only needs the access token and (optionally) the app secret.
+        // The app ID is solely consumed by the SDK's crash reporter, which we disable so it
+        // does not register a global exception handler on top of Laravel's.
+        $api = Api::init('', $this->appSecret, $this->token(), false);
 
         if ($this->logEnabled) {
             $api->setLogger(new CurlLogger);
