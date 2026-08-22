@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": "^8.3",
-        "facebook/php-business-sdk": "^26.0",
+        "facebook/php-business-sdk": "^25.0",
         "illuminate/contracts": "^11.0|^12.0|^13.0",
         "spatie/laravel-package-tools": "^1.11"
     },
