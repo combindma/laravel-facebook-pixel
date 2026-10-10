@@ -1,44 +1,33 @@
-# v5 Migration Guide: Steps to Upgrade from v4
+# Upgrade from v4 to v5
 
-Migrating to the latest version of our package is straightforward and involves a few key changes to ensure compatibility and take advantage of new features. Please follow the steps below to complete your migration.
+Update the package, then make these changes in your Laravel app:
 
-## Configuration Changes
+1. **Configuration:** publish the new file with `php artisan vendor:publish --tag="meta-pixel-config"`. Copy your settings into `config/meta-pixel.php` and update old `config()` references. The Pixel ID key is now `pixel_id`; the session key is `session_key`.
+2. **Environment variables:** rename the following entries in `.env`:
 
-### 1. Config File Rename
-The configuration file has been renamed to `meta-pixel`. Please update any references to the old config file in your project.
+   | v4 | v5 |
+   | --- | --- |
+   | `FACEBOOK_PIXEL_ID` | `META_PIXEL_ID` |
+   | `FACEBOOK_PIXEL_ENABLED` | `META_PIXEL_ENABLED` |
+   | `FACEBOOK_PIXEL_TOKEN` | `META_PIXEL_TOKEN` |
+   | `FACEBOOK_PIXEL_SESSION_KEY` | `META_PIXEL_SESSION_KEY` |
+   | `FACEBOOK_TEST_EVENT_CODE` | `META_TEST_EVENT_CODE` |
 
-### 2. Environment Variable Prefix Change
-Replace the `FACEBOOK_` prefix in your environment variables with `META_`. For example, change `FACEBOOK_PIXEL_ID` to `META_PIXEL_ID`.
+3. **Facade and middleware:** replace old references with `Combindma\FacebookPixel\Facades\MetaPixel` and `Combindma\FacebookPixel\MetaPixelMiddleware`. For flashed events, keep the middleware after Laravel's session middleware.
+4. **Blade layout:** replace `@include('facebookpixel::head')` and `@include('facebookpixel::body')` with the components below:
 
-## Feature Additions
+   ```blade
+   <head>
+       <x-metapixel-head />
+   </head>
+   <body>
+       <x-metapixel-body />
+       {{-- Page content --}}
+   </body>
+   ```
 
-### 3. Advanced Matching Enabled
-We have added a new feature `advanced_matching_enabled` to the configuration file, which is enabled by default. This feature enhances user tracking accuracy.
+5. **Advanced matching:** the new `advanced_matching_enabled` setting defaults to `true`. Set `META_PIXEL_ADVANCED_MATCHING_ENABLED=false` to stop automatically including authenticated user details.
 
-## Middleware Update
+After updating, clear cached configuration with `php artisan config:clear`. Confirm `META_PIXEL_ENABLED=true` in environments where you want tracking, then check browser events and, if used, Conversions API events in Meta Events Manager.
 
-### 4. Middleware Name Update
-The middleware name has been updated to `MetaPixelMiddleware`. Update your middleware references accordingly.
-
-## Facade Updates
-
-### 5. Facade Call Changes
-All facade calls should now be made to `MetaPixel` instead of the previous facade name.
-
-## Syntax Updates in HTML
-
-### 6. Head and Body Tag Names
-Update the head and body tags in your HTML files using the new syntax for better integration:
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <x-metapixel-head/>
-</head>
-<body>
-    <x-metapixel-body/>
-</body>
-</html>
-``` 
-
+See the [current documentation](README.md) for setup and examples.
